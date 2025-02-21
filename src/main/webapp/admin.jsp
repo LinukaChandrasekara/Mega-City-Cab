@@ -1,6 +1,6 @@
 <%@ page session="true" %>
 <%@ page import="java.sql.*" %>
-<%@ page import="com.megacitycab.utils.DBUtil" %>
+<%@ page import="com.megacitycab.dao.DBUtil" %>
 <%
     String username = (String) session.getAttribute("username");
 
