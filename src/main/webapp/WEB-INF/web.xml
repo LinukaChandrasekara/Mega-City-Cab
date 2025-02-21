@@ -1,0 +1,114 @@
+<web-app xmlns="http://jakarta.ee/xml/ns/jakartaee" version="6.0">
+    <servlet>
+        <servlet-name>LoginServlet</servlet-name>
+        <servlet-class>com.megacitycab.servlets.LoginServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>LoginServlet</servlet-name>
+        <url-pattern>/login</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>RegisterServlet</servlet-name>
+        <servlet-class>com.megacitycab.servlets.RegisterServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>RegisterServlet</servlet-name>
+        <url-pattern>/register</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>BookingServlet</servlet-name>
+        <servlet-class>com.megacitycab.servlets.BookingServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>BookingServlet</servlet-name>
+        <url-pattern>/book</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>LogoutServlet</servlet-name>
+        <servlet-class>com.megacitycab.servlets.LogoutServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>LogoutServlet</servlet-name>
+        <url-pattern>/logout</url-pattern>
+    </servlet-mapping>
+
+    <welcome-file-list>
+        <welcome-file>index.jsp</welcome-file>
+    </welcome-file-list>
+    
+    <servlet>
+    	<servlet-name>UpdateBookingServlet</servlet-name>
+    	<servlet-class>com.megacitycab.servlets.UpdateBookingServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+    	<servlet-name>UpdateBookingServlet</servlet-name>
+    	<url-pattern>/update_booking</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+    	<servlet-name>DeleteBookingServlet</servlet-name>
+    	<servlet-class>com.megacitycab.servlets.DeleteBookingServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+    	<servlet-name>DeleteBookingServlet</servlet-name>
+    	<url-pattern>/delete_booking</url-pattern>
+	</servlet-mapping>
+	<servlet>
+    	<servlet-name>AddDriverServlet</servlet-name>
+    	<servlet-class>com.megacitycab.servlets.AddDriverServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+    	<servlet-name>AddDriverServlet</servlet-name>
+    	<url-pattern>/add_driver</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+    	<servlet-name>DeleteDriverServlet</servlet-name>
+    	<servlet-class>com.megacitycab.servlets.DeleteDriverServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+    	<servlet-name>DeleteDriverServlet</servlet-name>
+    	<url-pattern>/delete_driver</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+    	<servlet-name>AssignDriverServlet</servlet-name>
+    	<servlet-class>com.megacitycab.servlets.AssignDriverServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+    	<servlet-name>AssignDriverServlet</servlet-name>
+    	<url-pattern>/assign_driver</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+    	<servlet-name>MakePaymentServlet</servlet-name>
+    	<servlet-class>com.megacitycab.servlets.MakePaymentServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+    	<servlet-name>MakePaymentServlet</servlet-name>
+    	<url-pattern>/make_payment</url-pattern>
+	</servlet-mapping>
+	<servlet>
+    	<servlet-name>AddUserServlet</servlet-name>
+    	<servlet-class>com.megacitycab.servlets.AddUserServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+    	<servlet-name>AddUserServlet</servlet-name>
+    	<url-pattern>/add_user</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+    	<servlet-name>DeleteUserServlet</servlet-name>
+    	<servlet-class>com.megacitycab.servlets.DeleteUserServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+    	<servlet-name>DeleteUserServlet</servlet-name>
+    	<url-pattern>/delete_user</url-pattern>
+	</servlet-mapping>
+	
+
+    
+</web-app>
