@@ -1,7 +1,7 @@
 <web-app xmlns="http://jakarta.ee/xml/ns/jakartaee" version="6.0">
     <servlet>
         <servlet-name>LoginServlet</servlet-name>
-        <servlet-class>com.megacitycab.servlets.LoginServlet</servlet-class>
+        <servlet-class>com.megacitycab.controller.LoginServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>LoginServlet</servlet-name>
@@ -10,7 +10,7 @@
 
     <servlet>
         <servlet-name>RegisterServlet</servlet-name>
-        <servlet-class>com.megacitycab.servlets.RegisterServlet</servlet-class>
+        <servlet-class>com.megacitycab.controller.RegisterServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>RegisterServlet</servlet-name>
@@ -19,7 +19,7 @@
 
     <servlet>
         <servlet-name>BookingServlet</servlet-name>
-        <servlet-class>com.megacitycab.servlets.BookingServlet</servlet-class>
+        <servlet-class>com.megacitycab.controller.BookingServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>BookingServlet</servlet-name>
@@ -28,7 +28,7 @@
 
     <servlet>
         <servlet-name>LogoutServlet</servlet-name>
-        <servlet-class>com.megacitycab.servlets.LogoutServlet</servlet-class>
+        <servlet-class>com.megacitycab.controller.LogoutServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>LogoutServlet</servlet-name>
@@ -41,7 +41,7 @@
     
     <servlet>
     	<servlet-name>UpdateBookingServlet</servlet-name>
-    	<servlet-class>com.megacitycab.servlets.UpdateBookingServlet</servlet-class>
+    	<servlet-class>com.megacitycab.controller.UpdateBookingServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
     	<servlet-name>UpdateBookingServlet</servlet-name>
@@ -50,7 +50,7 @@
 
 	<servlet>
     	<servlet-name>DeleteBookingServlet</servlet-name>
-    	<servlet-class>com.megacitycab.servlets.DeleteBookingServlet</servlet-class>
+    	<servlet-class>com.megacitycab.controller.DeleteBookingServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
     	<servlet-name>DeleteBookingServlet</servlet-name>
@@ -58,7 +58,7 @@
 	</servlet-mapping>
 	<servlet>
     	<servlet-name>AddDriverServlet</servlet-name>
-    	<servlet-class>com.megacitycab.servlets.AddDriverServlet</servlet-class>
+    	<servlet-class>com.megacitycab.controller.AddDriverServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
     	<servlet-name>AddDriverServlet</servlet-name>
@@ -67,7 +67,7 @@
 
 	<servlet>
     	<servlet-name>DeleteDriverServlet</servlet-name>
-    	<servlet-class>com.megacitycab.servlets.DeleteDriverServlet</servlet-class>
+    	<servlet-class>com.megacitycab.controller.DeleteDriverServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
     	<servlet-name>DeleteDriverServlet</servlet-name>
@@ -76,7 +76,7 @@
 
 	<servlet>
     	<servlet-name>AssignDriverServlet</servlet-name>
-    	<servlet-class>com.megacitycab.servlets.AssignDriverServlet</servlet-class>
+    	<servlet-class>com.megacitycab.controller.AssignDriverServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
     	<servlet-name>AssignDriverServlet</servlet-name>
@@ -85,7 +85,7 @@
 	
 	<servlet>
     	<servlet-name>MakePaymentServlet</servlet-name>
-    	<servlet-class>com.megacitycab.servlets.MakePaymentServlet</servlet-class>
+    	<servlet-class>com.megacitycab.controller.MakePaymentServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
     	<servlet-name>MakePaymentServlet</servlet-name>
@@ -93,7 +93,7 @@
 	</servlet-mapping>
 	<servlet>
     	<servlet-name>AddUserServlet</servlet-name>
-    	<servlet-class>com.megacitycab.servlets.AddUserServlet</servlet-class>
+    	<servlet-class>com.megacitycab.controller.AddUserServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
     	<servlet-name>AddUserServlet</servlet-name>
@@ -102,7 +102,7 @@
 
 	<servlet>
     	<servlet-name>DeleteUserServlet</servlet-name>
-    	<servlet-class>com.megacitycab.servlets.DeleteUserServlet</servlet-class>
+    	<servlet-class>com.megacitycab.controller.DeleteUserServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
     	<servlet-name>DeleteUserServlet</servlet-name>
