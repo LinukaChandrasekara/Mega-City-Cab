@@ -106,6 +106,10 @@
     <div class="login-card text-center">
         <i class="bi bi-person-circle profile-icon"></i>
         <h2 class="text-warning mb-4">Mega City Cab - Login</h2>
+                <%-- Display login message if redirected --%>
+        <% if(request.getParameter("message") != null) { %>
+            <div class="alert alert-info"><%= request.getParameter("message") %></div>
+        <% } %>
 
         <% if(request.getAttribute("error") != null) { %>
             <div class="alert alert-danger text-center"><%= request.getAttribute("error") %></div>

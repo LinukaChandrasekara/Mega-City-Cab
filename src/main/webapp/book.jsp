@@ -1,3 +1,13 @@
+<%@ page session="true" %>
+<%
+    // Check if user is logged in
+    String username = (String) session.getAttribute("username");
+    if (username == null) {
+        // Redirect to login page if not logged in
+        response.sendRedirect("login.jsp?message=Please login to book a ride.");
+        return;
+    }
+%>
 <!DOCTYPE html>
 <html>
 <head>
