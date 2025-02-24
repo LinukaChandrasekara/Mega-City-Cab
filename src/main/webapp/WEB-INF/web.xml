@@ -56,23 +56,33 @@
     	<servlet-name>DeleteBookingServlet</servlet-name>
     	<url-pattern>/delete_booking</url-pattern>
 	</servlet-mapping>
-	<servlet>
-    	<servlet-name>AddDriverServlet</servlet-name>
-    	<servlet-class>com.megacitycab.controller.AddDriverServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-    	<servlet-name>AddDriverServlet</servlet-name>
-    	<url-pattern>/add_driver</url-pattern>
-	</servlet-mapping>
+<servlet>
+    <servlet-name>AddDriverServlet</servlet-name>
+    <servlet-class>com.megacitycab.controller.AddDriverServlet</servlet-class>
+</servlet>
+<servlet-mapping>
+    <servlet-name>AddDriverServlet</servlet-name>
+    <url-pattern>/AddDriverServlet</url-pattern>
+</servlet-mapping>
 
-	<servlet>
-    	<servlet-name>DeleteDriverServlet</servlet-name>
-    	<servlet-class>com.megacitycab.controller.DeleteDriverServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-    	<servlet-name>DeleteDriverServlet</servlet-name>
-    	<url-pattern>/delete_driver</url-pattern>
-	</servlet-mapping>
+<servlet>
+    <servlet-name>EditDriverServlet</servlet-name>
+    <servlet-class>com.megacitycab.controller.EditDriverServlet</servlet-class>
+</servlet>
+<servlet-mapping>
+    <servlet-name>EditDriverServlet</servlet-name>
+    <url-pattern>/EditDriverServlet</url-pattern>
+</servlet-mapping>
+
+<servlet>
+    <servlet-name>DeleteDriverServlet</servlet-name>
+    <servlet-class>com.megacitycab.controller.DeleteDriverServlet</servlet-class>
+</servlet>
+<servlet-mapping>
+    <servlet-name>DeleteDriverServlet</servlet-name>
+    <url-pattern>/DeleteDriverServlet</url-pattern>
+</servlet-mapping>
+
 
 	<servlet>
     	<servlet-name>AssignDriverServlet</servlet-name>
