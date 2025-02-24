@@ -1,24 +1,24 @@
 package com.megacitycab.controller;
+
 import java.io.IOException;
 import java.sql.*;
 
 import com.megacitycab.dao.DBUtil;
 
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.*;
 
+@WebServlet("/login")
 public class LoginServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String username = request.getParameter("username");
-        String password = request.getParameter("password");  // User entered password
+        String password = request.getParameter("password");
 
         try (Connection con = DBUtil.getConnection()) {
-            // Query to check if username and password match
+            // Query to verify user credentials
             PreparedStatement ps = con.prepareStatement("SELECT role FROM users WHERE username=? AND password=?");
             ps.setString(1, username);
             ps.setString(2, password);
@@ -26,24 +26,44 @@ public class LoginServlet extends HttpServlet {
 
             if (rs.next()) {
                 String role = rs.getString("role");
+
+                // Set session attributes
                 HttpSession session = request.getSession();
                 session.setAttribute("username", username);
                 session.setAttribute("role", role);
 
-                // Redirect users based on role
-                if ("admin".equals(role)) {
-                    response.sendRedirect("admin.jsp");
-                } else {
-                    response.sendRedirect("index.jsp");
+                // Create cookies for username and role
+                Cookie usernameCookie = new Cookie("username", username);
+                Cookie roleCookie = new Cookie("role", role);
+                
+                usernameCookie.setMaxAge(24 * 60 * 60); // 1 day
+                roleCookie.setMaxAge(24 * 60 * 60);
+
+                response.addCookie(usernameCookie);
+                response.addCookie(roleCookie);
+
+                // Redirect based on role
+                switch (role) {
+                    case "admin":
+                        response.sendRedirect("adminDashboard.jsp?message=Welcome Admin!");
+                        break;
+                    case "driver":
+                        response.sendRedirect("driverDashboard.jsp?message=Welcome Driver!");
+                        break;
+                    case "customer":
+                    default:
+                        response.sendRedirect("index.jsp?message=Login successful!");
+                        break;
                 }
             } else {
-                request.setAttribute("error", "Invalid username or password!");
+                // Invalid credentials
+                request.setAttribute("error", "Invalid username or password. Please try again.");
                 request.getRequestDispatcher("login.jsp").forward(request, response);
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
-            response.getWriter().println("Database connection error!");
+            request.setAttribute("error", "An unexpected error occurred. Please try later.");
+            request.getRequestDispatcher("login.jsp").forward(request, response);
         }
     }
 }
-
