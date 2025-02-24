@@ -1,10 +1,12 @@
 eclipse.preferences.version=1
 encoding//src/main/webapp/add_booking.jsp=UTF-8
+encoding//src/main/webapp/add_user.jsp=UTF-8
 encoding//src/main/webapp/admin.jsp=UTF-8
 encoding//src/main/webapp/book_success.jsp=UTF-8
 encoding//src/main/webapp/bookingHistory.jsp=UTF-8
 encoding//src/main/webapp/contact.jsp=UTF-8
 encoding//src/main/webapp/edit_booking.jsp=UTF-8
+encoding//src/main/webapp/edit_user.jsp=UTF-8
 encoding//src/main/webapp/index.jsp=UTF-8
 encoding//src/main/webapp/manage_bookings.jsp=UTF-8
 encoding//src/main/webapp/manage_users.jsp=UTF-8
