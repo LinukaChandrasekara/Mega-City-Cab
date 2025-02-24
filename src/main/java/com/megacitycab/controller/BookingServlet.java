@@ -2,20 +2,32 @@ package com.megacitycab.controller;
 
 import java.io.IOException;
 import java.sql.*;
-
 import com.megacitycab.dao.DBUtil;
-
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.*;
-
 
 public class BookingServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String action = request.getParameter("action");  // ✅ Added this line
+        HttpSession session = request.getSession(false);
 
-        // Retrieve booking details from request
+        // ✅ Check if user is logged in
+        if (session == null || session.getAttribute("username") == null) {
+            response.sendRedirect("login.jsp?message=Please login to confirm booking.");
+            return;
+        }
+
+        String role = (String) session.getAttribute("role"); // ✅ Retrieve user role
+        String action = request.getParameter("action");      // e.g., "add" or "update"
+
+        // ✅ Allow both 'customer' and 'admin' roles to proceed
+        if (!"customer".equals(role) && !"admin".equals(role)) {
+            response.sendRedirect("login.jsp?message=Access denied.");
+            return;
+        }
+
+        // ✅ Retrieve booking details
         String customerName = request.getParameter("customer_name");
         String phone = request.getParameter("phone");
         String pickup = request.getParameter("pickup_location");
@@ -27,7 +39,14 @@ public class BookingServlet extends HttpServlet {
         try (Connection con = DBUtil.getConnection()) {
             if ("add".equals(action)) {
                 addBooking(con, customerName, phone, pickup, dropoff, vehicleType, distance, fare);
-                response.sendRedirect("manage_bookings.jsp?message=Booking added successfully.");
+
+                // ✅ Redirect based on role after booking
+                if ("customer".equals(role)) {
+                    response.sendRedirect("book_success.jsp?message=Booking confirmed successfully.");
+                } else {
+                    response.sendRedirect("manage_bookings.jsp?message=Booking added successfully.");
+                }
+
             } else if ("update".equals(action)) {
                 int bookingId = Integer.parseInt(request.getParameter("booking_id"));
                 updateBooking(con, bookingId, customerName, phone, pickup, dropoff, vehicleType, distance, fare);
