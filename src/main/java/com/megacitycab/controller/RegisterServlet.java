@@ -6,10 +6,9 @@ import java.sql.*;
 import com.megacitycab.dao.DBUtil;
 
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 
-@WebServlet("/register")
+
 public class RegisterServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 

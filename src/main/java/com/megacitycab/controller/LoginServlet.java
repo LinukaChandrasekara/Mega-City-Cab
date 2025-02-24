@@ -6,10 +6,10 @@ import java.sql.*;
 import com.megacitycab.dao.DBUtil;
 
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
+
 import jakarta.servlet.http.*;
 
-@WebServlet("/login")
+
 public class LoginServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
@@ -45,7 +45,7 @@ public class LoginServlet extends HttpServlet {
                 // Redirect based on role
                 switch (role) {
                     case "admin":
-                        response.sendRedirect("adminDashboard.jsp?message=Welcome Admin!");
+                        response.sendRedirect("admin.jsp?message=Welcome Admin!");
                         break;
                     case "driver":
                         response.sendRedirect("driverDashboard.jsp?message=Welcome Driver!");

@@ -1,77 +1,60 @@
 <%@ page session="true" %>
-<%@ page import="java.sql.*" %>
-<%@ page import="com.megacitycab.dao.DBUtil" %>
+<%@ page import="java.sql.*, com.megacitycab.dao.DBUtil" %>
 <%
-    if (session.getAttribute("username") == null || !session.getAttribute("username").equals("admin")) {
-        response.sendRedirect("login.jsp");
+    String role = (String) session.getAttribute("role");
+    if (role == null || !"admin".equals(role)) {
+        response.sendRedirect("login.jsp?message=Admin access required.");
+        return;
     }
 %>
-
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Manage Users - Admin Panel</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 </head>
 <body>
     <div class="container mt-5">
-        <h2 class="text-warning">Manage Users</h2>
-
-        <!-- Form to Add a New User -->
-        <form action="add_user" method="post">
-            <div class="mb-3">
-                <label class="form-label">Username</label>
-                <input type="text" class="form-control" name="username" required>
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Password</label>
-                <input type="password" class="form-control" name="password" required>
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Role</label>
-                <select name="role" class="form-select" required>
-                    <option value="customer">Customer</option>
-                    <option value="admin">Admin</option>
-                </select>
-            </div>
-            <button type="submit" class="btn btn-success">Add User</button>
-        </form>
-
-        <hr>
-
-        <!-- Display All Users -->
+        <h2 class="text-warning text-center">👥 Manage Users</h2>
+        <a href="add_user.jsp" class="btn btn-success mb-3">➕ Add User</a>
         <table class="table table-bordered">
-            <thead>
+            <thead class="table-dark">
                 <tr>
-                    <th>ID</th>
+                    <th>#</th>
                     <th>Username</th>
                     <th>Role</th>
-                    <th>Action</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
                 <%
-                    Connection con = DBUtil.getConnection();
-                    Statement stmt = con.createStatement();
-                    ResultSet rs = stmt.executeQuery("SELECT * FROM users");
-
-                    while (rs.next()) {
+                    try (Connection con = DBUtil.getConnection()) {
+                        ResultSet rs = con.createStatement().executeQuery("SELECT * FROM users ORDER BY role");
+                        int count = 1;
+                        while (rs.next()) {
                 %>
                 <tr>
-                    <td><%= rs.getInt("id") %></td>
+                    <td><%= count++ %></td>
                     <td><%= rs.getString("username") %></td>
                     <td><%= rs.getString("role") %></td>
                     <td>
-                        <% if (!rs.getString("username").equals("admin")) { %>
-                            <a href="delete_user?id=<%= rs.getInt("id") %>" class="btn btn-danger btn-sm">Delete</a>
-                        <% } else { %>
-                            <button class="btn btn-secondary btn-sm" disabled>Cannot Delete</button>
-                        <% } %>
+                        <a href="edit_user.jsp?userId=<%= rs.getInt("user_id") %>" class="btn btn-sm btn-primary">Edit</a>
+                        <a href="UserServlet?action=delete&userId=<%= rs.getInt("user_id") %>" class="btn btn-sm btn-danger" onclick="return confirm('Delete this user?');">Delete</a>
                     </td>
                 </tr>
-                <% } %>
+                <%
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                %>
+                <tr><td colspan="4" class="text-center text-danger">⚠️ Error loading users.</td></tr>
+                <%
+                    }
+                %>
             </tbody>
         </table>
+        <a href="admin.jsp" class="btn btn-secondary mt-3">Back to Dashboard</a>
     </div>
 </body>
 </html>
