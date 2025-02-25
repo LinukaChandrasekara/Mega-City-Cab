@@ -97,13 +97,14 @@
 </style>
 </head>
 <body>
-    <!-- Navbar -->
+    <!-- 🌐 Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-black">
         <div class="container">
-			<a class="navbar-brand text-warning" href="#" style="font-size: 1.5rem;"><b> Mega City Cab</b></a>
+            <a class="navbar-brand text-warning" href="index.jsp" style="font-size: 1.5rem;"><b>Mega City Cab</b></a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
+
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item"><a class="nav-link text-white" href="index.jsp">Home</a></li>
@@ -111,16 +112,24 @@
                     <li class="nav-item"><a class="nav-link text-white" href="services.jsp">Services</a></li>
                     <li class="nav-item"><a class="nav-link text-white" href="contact.jsp">Contact</a></li>
 
-                    <!-- If user is logged in, show "Welcome" message and Logout button -->
-                    <% if (session.getAttribute("username") != null) { %>
+                    <% String username = (String) session.getAttribute("username");
+                       String role = (String) session.getAttribute("role");
+                       if (username != null) { %>
                         <li class="nav-item">
-                            <a class="nav-link text-warning">Welcome, <%= session.getAttribute("username") %>!</a>
+                            <a class="nav-link text-warning">Welcome, <%= username %>!</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-danger" href="logout">Logout</a>
-                        </li>
+
+                        <%-- 🎯 Conditional Dashboard Links --%>
+                        <% if ("customer".equals(role)) { %>
+                            <li class="nav-item"><a class="nav-link text-info" href="customer_dashboard.jsp">Dashboard</a></li>
+                        <% } else if ("driver".equals(role)) { %>
+                            <li class="nav-item"><a class="nav-link text-info" href="driver_dashboard.jsp">Dashboard</a></li>
+                        <% } else if ("admin".equals(role)) { %>
+                            <li class="nav-item"><a class="nav-link text-info" href="admin.jsp">Admin Panel</a></li>
+                        <% } %>
+
+                        <li class="nav-item"><a class="nav-link text-danger" href="logout">Logout</a></li>
                     <% } else { %>
-                        <!-- If user is NOT logged in, show Login and Register buttons -->
                         <li class="nav-item"><a class="nav-link text-white" href="login.jsp">Login</a></li>
                         <li class="nav-item"><a class="nav-link text-white" href="register.jsp">Register</a></li>
                     <% } %>

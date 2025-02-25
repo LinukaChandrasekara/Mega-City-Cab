@@ -6,9 +6,7 @@ import java.sql.*;
 import com.megacitycab.dao.DBUtil;
 
 import jakarta.servlet.ServletException;
-
 import jakarta.servlet.http.*;
-
 
 public class LoginServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
@@ -18,7 +16,7 @@ public class LoginServlet extends HttpServlet {
         String password = request.getParameter("password");
 
         try (Connection con = DBUtil.getConnection()) {
-            // Query to verify user credentials
+            // ✅ Query to verify user credentials
             PreparedStatement ps = con.prepareStatement("SELECT role FROM users WHERE username=? AND password=?");
             ps.setString(1, username);
             ps.setString(2, password);
@@ -27,39 +25,41 @@ public class LoginServlet extends HttpServlet {
             if (rs.next()) {
                 String role = rs.getString("role");
 
-                // Set session attributes
+                // ✅ Set session attributes
                 HttpSession session = request.getSession();
                 session.setAttribute("username", username);
                 session.setAttribute("role", role);
 
-                // Create cookies for username and role
+                // ✅ Create cookies for username and role
                 Cookie usernameCookie = new Cookie("username", username);
                 Cookie roleCookie = new Cookie("role", role);
-                
                 usernameCookie.setMaxAge(24 * 60 * 60); // 1 day
                 roleCookie.setMaxAge(24 * 60 * 60);
-
                 response.addCookie(usernameCookie);
                 response.addCookie(roleCookie);
 
-                // Redirect based on role
+                // ✅ Redirect based on role
                 switch (role) {
                     case "admin":
                         response.sendRedirect("admin.jsp?message=Welcome Admin!");
                         break;
                     case "driver":
-                        response.sendRedirect("driverDashboard.jsp?message=Welcome Driver!");
+                        response.sendRedirect("driver_dashboard.jsp?message=Welcome Driver!");
                         break;
                     case "customer":
+                        response.sendRedirect("customer_dashboard.jsp?message=Welcome Customer!"); // ✅ Updated redirect
+                        break;
                     default:
-                        response.sendRedirect("index.jsp?message=Login successful!");
+                        response.sendRedirect("login.jsp?message=Unknown role. Contact admin.");
                         break;
                 }
+
             } else {
-                // Invalid credentials
+                // ❌ Invalid credentials
                 request.setAttribute("error", "Invalid username or password. Please try again.");
                 request.getRequestDispatcher("login.jsp").forward(request, response);
             }
+
         } catch (SQLException e) {
             e.printStackTrace();
             request.setAttribute("error", "An unexpected error occurred. Please try later.");
