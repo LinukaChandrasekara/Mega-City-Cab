@@ -20,17 +20,37 @@
 
         <form action="AddDriverServlet" method="post" class="mt-4">
             <div class="mb-3">
-                <label class="form-label">Driver Name</label>
-                <input type="text" class="form-control" name="name" placeholder="Enter driver's name" required>
+                <label class="form-label">Full Name</label>
+                <input type="text" class="form-control" name="name" placeholder="Enter driver's full name" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Username</label>
+                <input type="text" class="form-control" name="username" placeholder="Enter username" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Password</label>
+                <input type="password" class="form-control" name="password" placeholder="Enter password" required>
             </div>
             <div class="mb-3">
                 <label class="form-label">Phone Number</label>
                 <input type="tel" class="form-control" name="phone" placeholder="Enter phone number" required>
             </div>
             <div class="mb-3">
+                <label class="form-label">License Number</label>
+                <input type="text" class="form-control" name="license_number" placeholder="Enter license number" required>
+            </div>
+            <div class="mb-3">
                 <label class="form-label">Vehicle</label>
                 <input type="text" class="form-control" name="vehicle" placeholder="Enter vehicle type" required>
             </div>
+            <div class="mb-3">
+    			<label class="form-label">Experience Years</label>
+    			<input type="number" class="form-control" name="experience_years" placeholder="Enter years of experience" required>
+		</div>
+			<div class="mb-3">
+    			<label class="form-label">Assigned Vehicle ID (Optional)</label>
+    			<input type="number" class="form-control" name="assigned_vehicle_id" placeholder="Enter vehicle ID">
+		</div>
             <div class="mb-3">
                 <label class="form-label">Status</label>
                 <select class="form-select" name="status" required>

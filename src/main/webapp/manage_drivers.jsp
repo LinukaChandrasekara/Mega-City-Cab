@@ -34,37 +34,43 @@
                 </tr>
             </thead>
             <tbody>
-                <%
-                    try (Connection con = DBUtil.getConnection()) {
-                        ResultSet rs = con.createStatement().executeQuery("SELECT * FROM drivers ORDER BY status DESC, name");
-                        int count = 1;
-                        while (rs.next()) {
-                %>
-                <tr>
-                    <td><%= count++ %></td>
-                    <td><%= rs.getString("name") %></td>
-                    <td><%= rs.getString("phone") %></td>
-                    <td><%= rs.getString("vehicle") %></td>
-                    <td>
-                        <% String status = rs.getString("status"); %>
-                        <span class="badge bg-<%= "available".equals(status) ? "success" : "secondary" %>">
-                            <%= status.substring(0, 1).toUpperCase() + status.substring(1) %>
-                        </span>
-                    </td>
-                    <td>
-                        <a href="edit_driver.jsp?driverId=<%= rs.getInt("driver_id") %>" class="btn btn-sm btn-primary">✏️ Edit</a>
-                        <a href="DeleteDriverServlet?driverId=<%= rs.getInt("driver_id") %>" 
-                           class="btn btn-sm btn-danger" 
-                           onclick="return confirm('Delete this driver?');">🗑️ Delete</a>
-                    </td>
-                </tr>
-                <%  
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                %>
-                <tr><td colspan="6" class="text-center text-danger">⚠️ Error loading drivers.</td></tr>
-                <% } %>
+<%
+    try (Connection con = DBUtil.getConnection()) {
+        String sql = "SELECT d.driver_id, u.full_name AS name, u.phone_number AS phone, v.model AS vehicle, d.status " +
+                     "FROM drivers d " +
+                     "JOIN users u ON d.driver_id = u.user_id " +
+                     "LEFT JOIN vehicles v ON d.assigned_vehicle_id = v.vehicle_id " +
+                     "ORDER BY d.status DESC, u.full_name";
+
+        try (PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            int count = 1;
+            while (rs.next()) {
+%>
+<tr>
+    <td><%= count++ %></td>
+    <td><%= rs.getString("name") %></td>
+    <td><%= rs.getString("phone") %></td>
+    <td><%= rs.getString("vehicle") != null ? rs.getString("vehicle") : "Not Assigned" %></td>
+    <td><%= rs.getString("status") %></td>
+    <td>
+        <a href="edit_driver.jsp?driverId=<%= rs.getInt("driver_id") %>" class="btn btn-sm btn-primary">✏️ Edit</a>
+        <a href="DeleteDriverServlet?driverId=<%= rs.getInt("driver_id") %>"
+           class="btn btn-sm btn-danger"
+           onclick="return confirm('Delete this driver?');">🗑️ Delete</a>
+    </td>
+</tr>
+<%
+            }
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+%>
+<tr><td colspan="6" class="text-center text-danger">⚠️ Error loading drivers.</td></tr>
+<% } %>
+
+
             </tbody>
         </table>
         <a href="admin.jsp" class="btn btn-secondary mt-3">⬅️ Back to Dashboard</a>

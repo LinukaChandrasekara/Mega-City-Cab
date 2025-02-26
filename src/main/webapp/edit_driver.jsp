@@ -8,17 +8,24 @@
     }
 
     int driverId = Integer.parseInt(request.getParameter("driverId"));
-    String name = "", phone = "", vehicle = "", status = "";
+    String fullName = "", phone = "", vehicle = "", status = "";
 
     try (Connection con = DBUtil.getConnection()) {
-        PreparedStatement ps = con.prepareStatement("SELECT * FROM drivers WHERE driver_id = ?");
+        String sql = """
+            SELECT u.full_name, u.phone_number, v.model AS vehicle_model, d.status
+            FROM drivers d
+            JOIN users u ON d.driver_id = u.user_id
+            LEFT JOIN vehicles v ON d.assigned_vehicle_id = v.vehicle_id
+            WHERE d.driver_id = ?
+        """;
+        PreparedStatement ps = con.prepareStatement(sql);
         ps.setInt(1, driverId);
         ResultSet rs = ps.executeQuery();
 
         if (rs.next()) {
-            name = rs.getString("name");
-            phone = rs.getString("phone");
-            vehicle = rs.getString("vehicle");
+            fullName = rs.getString("full_name");
+            phone = rs.getString("phone_number");
+            vehicle = rs.getString("vehicle_model") != null ? rs.getString("vehicle_model") : "";
             status = rs.getString("status");
         } else {
             response.sendRedirect("manage_drivers.jsp?message=Driver not found.");
@@ -39,20 +46,19 @@
 <body>
     <div class="container mt-5">
         <h2 class="text-primary text-center">✏️ Edit Driver</h2>
-
         <form action="EditDriverServlet" method="post" class="mt-4">
             <input type="hidden" name="driver_id" value="<%= driverId %>">
             <div class="mb-3">
-                <label class="form-label">Driver Name</label>
-                <input type="text" class="form-control" name="name" value="<%= name %>" required>
+                <label class="form-label">Full Name</label>
+                <input type="text" class="form-control" name="full_name" value="<%= fullName %>" required>
             </div>
             <div class="mb-3">
                 <label class="form-label">Phone Number</label>
-                <input type="tel" class="form-control" name="phone" value="<%= phone %>" required>
+                <input type="tel" class="form-control" name="phone_number" value="<%= phone %>" required>
             </div>
             <div class="mb-3">
-                <label class="form-label">Vehicle</label>
-                <input type="text" class="form-control" name="vehicle" value="<%= vehicle %>" required>
+                <label class="form-label">Vehicle Model</label>
+                <input type="text" class="form-control" name="vehicle" value="<%= vehicle %>">
             </div>
             <div class="mb-3">
                 <label class="form-label">Status</label>

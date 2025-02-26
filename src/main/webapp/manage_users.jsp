@@ -40,7 +40,7 @@
                     <td><%= rs.getString("role") %></td>
                     <td>
                         <a href="edit_user.jsp?userId=<%= rs.getInt("user_id") %>" class="btn btn-sm btn-primary">Edit</a>
-                        <a href="UserServlet?action=delete&userId=<%= rs.getInt("user_id") %>" class="btn btn-sm btn-danger" onclick="return confirm('Delete this user?');">Delete</a>
+                        <a href="DeleteUserServlet?action=delete&userId=<%= rs.getInt("user_id") %>" class="btn btn-sm btn-danger" onclick="return confirm('Delete this user?');">Delete</a>
                     </td>
                 </tr>
                 <%

@@ -16,10 +16,10 @@
         ResultSet rsBookings = stmt.executeQuery("SELECT COUNT(*) FROM bookings");
         if (rsBookings.next()) totalBookings = rsBookings.getInt(1);
 
-        ResultSet rsUsers = stmt.executeQuery("SELECT COUNT(*) FROM users WHERE role='customer'");
+        ResultSet rsUsers = stmt.executeQuery("SELECT COUNT(*) FROM users;");
         if (rsUsers.next()) totalUsers = rsUsers.getInt(1);
 
-        ResultSet rsDrivers = stmt.executeQuery("SELECT COUNT(*) FROM drivers");
+        ResultSet rsDrivers = stmt.executeQuery("SELECT COUNT(*) FROM users WHERE role='driver';");
         if (rsDrivers.next()) totalDrivers = rsDrivers.getInt(1);
 
         ResultSet rsAvailableDrivers = stmt.executeQuery("SELECT COUNT(*) FROM drivers WHERE availability = TRUE");
