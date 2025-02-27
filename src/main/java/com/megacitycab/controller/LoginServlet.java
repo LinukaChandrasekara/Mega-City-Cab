@@ -2,12 +2,12 @@ package com.megacitycab.controller;
 
 import java.io.IOException;
 import java.sql.*;
-
 import com.megacitycab.dao.DBUtil;
-
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 
+@WebServlet("/LoginServlet")
 public class LoginServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
@@ -16,54 +16,35 @@ public class LoginServlet extends HttpServlet {
         String password = request.getParameter("password");
 
         try (Connection con = DBUtil.getConnection()) {
-            // ✅ Query to verify user credentials
-            PreparedStatement ps = con.prepareStatement("SELECT role FROM users WHERE username=? AND password=?");
-            ps.setString(1, username);
-            ps.setString(2, password);
-            ResultSet rs = ps.executeQuery();
+            String sql = "SELECT user_id, role FROM users WHERE username=? AND password=?";
+            try (PreparedStatement ps = con.prepareStatement(sql)) {
+                ps.setString(1, username);
+                ps.setString(2, password);
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        HttpSession session = request.getSession(); // ✅ Ensure session is created
+                        session.setAttribute("username", username);
+                        session.setAttribute("role", rs.getString("role"));
+                        session.setMaxInactiveInterval(30 * 60); // 30 minutes session timeout
 
-            if (rs.next()) {
-                String role = rs.getString("role");
-
-                // ✅ Set session attributes
-                HttpSession session = request.getSession();
-                session.setAttribute("username", username);
-                session.setAttribute("role", role);
-
-                // ✅ Create cookies for username and role
-                Cookie usernameCookie = new Cookie("username", username);
-                Cookie roleCookie = new Cookie("role", role);
-                usernameCookie.setMaxAge(24 * 60 * 60); // 1 day
-                roleCookie.setMaxAge(24 * 60 * 60);
-                response.addCookie(usernameCookie);
-                response.addCookie(roleCookie);
-
-                // ✅ Redirect based on role
-                switch (role) {
-                    case "admin":
-                        response.sendRedirect("admin.jsp?message=Welcome Admin!");
-                        break;
-                    case "driver":
-                        response.sendRedirect("driver_dashboard.jsp?message=Welcome Driver!");
-                        break;
-                    case "customer":
-                        response.sendRedirect("customer_dashboard.jsp?message=Welcome Customer!"); // ✅ Updated redirect
-                        break;
-                    default:
-                        response.sendRedirect("login.jsp?message=Unknown role. Contact admin.");
-                        break;
+                        // ✅ Redirect based on role
+                        String role = rs.getString("role");
+                        if ("admin".equals(role)) {
+                            response.sendRedirect("admin_dashboard.jsp");
+                        } else if ("customer".equals(role)) {
+                            response.sendRedirect("customer_dashboard.jsp");
+                        } else if ("driver".equals(role)) {
+                            response.sendRedirect("driver_dashboard.jsp");
+                        } else {
+                            response.sendRedirect("login.jsp?message=Invalid role assigned.");
+                        }
+                        return;
+                    }
                 }
-
-            } else {
-                // ❌ Invalid credentials
-                request.setAttribute("error", "Invalid username or password. Please try again.");
-                request.getRequestDispatcher("login.jsp").forward(request, response);
             }
-
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            request.setAttribute("error", "An unexpected error occurred. Please try later.");
-            request.getRequestDispatcher("login.jsp").forward(request, response);
         }
+        response.sendRedirect("login.jsp?message=Invalid username or password.");
     }
 }

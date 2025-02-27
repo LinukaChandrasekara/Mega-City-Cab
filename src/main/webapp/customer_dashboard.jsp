@@ -2,11 +2,15 @@
 <%@ page import="java.sql.*, com.megacitycab.dao.DBUtil" %>
 <%
     String username = (String) session.getAttribute("username");
-    if (username == null) {
-        response.sendRedirect("login.jsp?message=Please login first.");
+    String role = (String) session.getAttribute("role");
+
+    // ✅ Redirect if session is missing OR if the user is not a customer
+    if (username == null || role == null || !"customer".equals(role)) {
+        response.sendRedirect("login.jsp?message=Unauthorized access.");
         return;
     }
 %>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>

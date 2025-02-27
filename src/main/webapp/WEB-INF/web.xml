@@ -18,15 +18,6 @@
     </servlet-mapping>
 
     <servlet>
-        <servlet-name>BookingServlet</servlet-name>
-        <servlet-class>com.megacitycab.controller.BookingServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>BookingServlet</servlet-name>
-        <url-pattern>/book</url-pattern>
-    </servlet-mapping>
-
-    <servlet>
         <servlet-name>LogoutServlet</servlet-name>
         <servlet-class>com.megacitycab.controller.LogoutServlet</servlet-class>
     </servlet>

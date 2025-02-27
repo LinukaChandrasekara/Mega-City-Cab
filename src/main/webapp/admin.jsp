@@ -3,8 +3,8 @@
 <%
     String username = (String) session.getAttribute("username");
     String role = (String) session.getAttribute("role");
-
-    if (username == null || !"admin".equals(role)) {
+    HttpSession currentSession = request.getSession(false);
+    if (currentSession == null || !"admin".equals(currentSession.getAttribute("role"))) {
         response.sendRedirect("login.jsp?message=Admin access required.");
         return;
     }

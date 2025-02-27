@@ -1,11 +1,39 @@
 <%@ page session="true" %>
+<%@ page import="java.sql.*, com.megacitycab.dao.DBUtil" %>
 <%
-    String username = (String) session.getAttribute("username");
-    if (username == null) {
+    HttpSession userSession = request.getSession(false);
+    if (userSession == null || userSession.getAttribute("username") == null) {
         response.sendRedirect("login.jsp?message=Please login to book a ride.");
         return;
     }
+
+    String username = (String) userSession.getAttribute("username");
+    String role = (String) userSession.getAttribute("role");
+
+    if (!"customer".equals(role)) {
+        response.sendRedirect("login.jsp?message=Only customers can book rides.");
+        return;
+    }
+
+    // ✅ Now we declare fullName and phoneNumber
+    String fullName = "";
+    String phoneNumber = "";
+
+    try (Connection con = DBUtil.getConnection()) {
+        String sql = "SELECT full_name, phone_number FROM users WHERE username = ?";
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, username); // ✅ 'username' is now declared
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                fullName = rs.getString("full_name");
+                phoneNumber = rs.getString("phone_number");
+            }
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
 %>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -24,15 +52,15 @@
 <body>
     <div class="container mt-5">
         <h2 class="text-warning text-center">Book Your Ride</h2>
-        <form action="book" method="post">
+        <form action="BookingServlet" method="post">
             <div class="mb-3">
-                <label class="form-label">Full Name</label>
-                <input type="text" class="form-control" name="customer_name" value="<%= username %>" required>
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Phone Number</label>
-                <input type="tel" class="form-control" name="phone" required>
-            </div>
+    			<label class="form-label">Full Name</label>
+    			<input type="text" class="form-control" name="customer_name" value="<%= fullName %>" readonly>
+			</div>
+			<div class="mb-3">
+    			<label class="form-label">Phone Number</label>
+    			<input type="tel" class="form-control" name="phone" value="<%= phoneNumber %>" required>
+			</div>
             <div class="mb-3">
                 <label class="form-label">Pickup Location</label>
                 <input type="text" class="form-control" id="pickup_location" name="pickup_location" required>
@@ -57,7 +85,7 @@
             <input type="hidden" id="distance" name="distance">
             <input type="hidden" id="fare" name="fare">
 
-            <button type="submit" class="btn btn-warning w-100 mt-3">Confirm Booking</button>
+            <button type="submit" class="btn btn-warning w-100 mt-3" onclick="return validateBooking()">Confirm Booking</button>
         </form>
     </div>
 
@@ -148,6 +176,18 @@
             document.getElementById("distance").value = distance.toFixed(2);
             document.getElementById("fare").value = totalFare.toFixed(2);
         }
+        
+        function validateBooking() {
+            const distance = document.getElementById("distance").value;
+            const fare = document.getElementById("fare").value;
+
+            if (!distance || !fare) {
+                alert("Please calculate the fare before confirming the booking.");
+                return false; // Prevent form submission
+            }
+            return true; // Allow form submission
+        }
+
     </script>
 </body>
 </html>
