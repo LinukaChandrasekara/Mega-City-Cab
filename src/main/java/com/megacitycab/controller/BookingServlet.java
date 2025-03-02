@@ -12,29 +12,21 @@ public class BookingServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    	HttpSession session = request.getSession(false);
-    	if (session == null) {
-    	    System.out.println("DEBUG: Session is null");
-    	    response.sendRedirect("login.jsp?message=Please login to confirm booking.");
-    	    return;
-    	}
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("username") == null || session.getAttribute("role") == null) {
+            response.sendRedirect("login.jsp?message=Please login to confirm booking.");
+            return;
+        }
 
-    	String username = (String) session.getAttribute("username");
-    	String role = (String) session.getAttribute("role");
+        String username = (String) session.getAttribute("username");
+        String role = (String) session.getAttribute("role");
 
-    	if (username == null) {
-    	    System.out.println("DEBUG: Username is null in session");
-    	    response.sendRedirect("login.jsp?message=Please login to confirm booking.");
-    	    return;
-    	}
+        if (!"customer".equals(role)) {
+            response.sendRedirect("login.jsp?message=Only customers can book rides.");
+            return;
+        }
 
-    	if (role == null) {
-    	    System.out.println("DEBUG: Role is null in session");
-    	    response.sendRedirect("login.jsp?message=Please login to confirm booking.");
-    	    return;
-    	}
-
-    	System.out.println("DEBUG: Logged-in user: " + username + ", Role: " + role);
+        System.out.println("DEBUG: Logged-in user: " + username + ", Role: " + role);
 
         
         
@@ -103,35 +95,34 @@ public class BookingServlet extends HttpServlet {
      * ✅ Add a new booking and optionally assign a driver.
      */
     private int addBooking(Connection con, String customerName, String phone, String pickup, String dropoff,
-                           String vehicleType, double distance, double fare, int driverId) throws SQLException {
-        String sql = "INSERT INTO bookings (customer_name, phone, pickup_location, dropoff_location, vehicle_type, distance, fare, status, driver_id) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            String vehicleType, double distance, double fare, int driverId) throws SQLException {
+String sql = "INSERT INTO bookings (customer_name, phone, pickup_location, dropoff_location, vehicle_type, distance, fare, status, driver_id) " +
+      "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";  // ✅ Correctly expects 9 parameters
 
-        try (PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            ps.setString(1, customerName);
-            ps.setString(2, phone);
-            ps.setString(3, pickup);
-            ps.setString(4, dropoff);
-            ps.setString(5, vehicleType);
-            ps.setDouble(6, distance);
-            ps.setDouble(7, fare);
-            ps.setObject(8, driverId > 0 ? driverId : null);
-            ps.setString(8, "pending"); // Default booking status
-            ps.setObject(9, driverId > 0 ? driverId : null); // Assign driver ID or leave null
+try (PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+ps.setString(1, customerName);
+ps.setString(2, phone);
+ps.setString(3, pickup);
+ps.setString(4, dropoff);
+ps.setString(5, vehicleType);
+ps.setDouble(6, distance);
+ps.setDouble(7, fare);
+ps.setString(8, "pending"); // ✅ Now correctly sets "pending" status
+ps.setObject(9, driverId > 0 ? driverId : null); // ✅ Correctly assigns driver_id
+
+int affectedRows = ps.executeUpdate();
+if (affectedRows == 0) return -1;
+
+try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+ if (generatedKeys.next()) {
+     return generatedKeys.getInt(1);
+ }
+}
+}
+return -1;
+}
 
 
-
-            int affectedRows = ps.executeUpdate();
-            if (affectedRows == 0) return -1;
-
-            try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
-                if (generatedKeys.next()) {
-                    return generatedKeys.getInt(1);
-                }
-            }
-        }
-        return -1;
-    }
 
     /**
      * ✅ Update an existing booking.

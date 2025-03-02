@@ -2,10 +2,10 @@
 <%@ page import="java.sql.*, com.megacitycab.dao.DBUtil" %>
 <%
     HttpSession userSession = request.getSession(false);
-    if (userSession == null || userSession.getAttribute("username") == null) {
-        response.sendRedirect("login.jsp?message=Please login to book a ride.");
-        return;
-    }
+if (userSession == null || userSession.getAttribute("username") == null || !"customer".equals(userSession.getAttribute("role"))) {
+    response.sendRedirect("login.jsp?message=Only customers can book rides.");
+    return;
+}
 
     String username = (String) userSession.getAttribute("username");
     String role = (String) userSession.getAttribute("role");
@@ -53,6 +53,7 @@
     <div class="container mt-5">
         <h2 class="text-warning text-center">Book Your Ride</h2>
         <form action="BookingServlet" method="post">
+        <input type="hidden" name="action" value="add">
             <div class="mb-3">
     			<label class="form-label">Full Name</label>
     			<input type="text" class="form-control" name="customer_name" value="<%= fullName %>" readonly>
@@ -86,6 +87,8 @@
             <input type="hidden" id="fare" name="fare">
 
             <button type="submit" class="btn btn-warning w-100 mt-3" onclick="return validateBooking()">Confirm Booking</button>
+            
+            
         </form>
     </div>
 

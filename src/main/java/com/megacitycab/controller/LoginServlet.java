@@ -29,8 +29,10 @@ public class LoginServlet extends HttpServlet {
 
                         // ✅ Redirect based on role
                         String role = rs.getString("role");
+                        session.setAttribute("role", role);
+
                         if ("admin".equals(role)) {
-                            response.sendRedirect("admin_dashboard.jsp");
+                            response.sendRedirect("admin.jsp");
                         } else if ("customer".equals(role)) {
                             response.sendRedirect("customer_dashboard.jsp");
                         } else if ("driver".equals(role)) {
