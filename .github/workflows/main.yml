@@ -46,9 +46,11 @@ jobs:
           done
 
       - name: Build with Maven
+        working-directory: Mega-City-Cab
         run: mvn -B clean package
 
       - name: Run Tests
+        working-directory: Mega-City-Cab
         run: mvn test
 
       - name: Archive Test Results
@@ -56,12 +58,11 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: test-results
-          path: target/surefire-reports
+          path: Mega-City-Cab/target/surefire-reports
 
   deploy:
     needs: [ build_and_test ]
     runs-on: ubuntu-latest
-    # Only deploy when pushing to 'main' (adjust branch as needed)
     if: github.ref == 'refs/heads/main'
     steps:
       - name: Check out code
@@ -74,11 +75,12 @@ jobs:
           java-version: 17
 
       - name: Build with Maven (again)
+        working-directory: Mega-City-Cab
         run: mvn -B clean package
 
       - name: Deploy WAR to Tomcat (example using scp)
         run: |
-          scp -o StrictHostKeyChecking=no target/*.war ${{ secrets.TOMCAT_USER }}@your-tomcat-server:/path/to/tomcat/webapps/
+          scp -o StrictHostKeyChecking=no Mega-City-Cab/target/*.war ${{ secrets.TOMCAT_USER }}@your-tomcat-server:/path/to/tomcat/webapps/
         env:
           TOMCAT_USER: ${{ secrets.TOMCAT_USER }}
           TOMCAT_PASS: ${{ secrets.TOMCAT_PASS }}
