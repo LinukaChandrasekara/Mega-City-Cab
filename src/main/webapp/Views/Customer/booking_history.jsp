@@ -74,34 +74,45 @@
     </div>
 
     <!-- Booking History Table -->
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th><i class="fas fa-receipt icon"></i> Booking ID</th>
-                <th><i class="fas fa-map-marker-alt icon"></i> Pickup</th>
-                <th><i class="fas fa-map-pin icon"></i> Drop-off</th>
-                <th><i class="fas fa-info-circle icon"></i> Status</th>
-                <th><i class="fas fa-dollar-sign icon"></i> Fare</th>
-            </tr>
-        </thead>
-        <tbody>
-            <% if (bookingHistory.isEmpty()) { %>
-                <tr>
-                    <td colspan="5" class="text-center text-danger">No bookings found.</td>
-                </tr>
-            <% } else { %>
-                <% for (Booking booking : bookingHistory) { %>
-                    <tr>
-                        <td><%= booking.getBookingID() %></td>
-                        <td><%= booking.getPickupLat() %>, <%= booking.getPickupLng() %></td>
-                        <td><%= booking.getDropoffLat() %>, <%= booking.getDropoffLng() %></td>
-                        <td><%= booking.getStatus() %></td>
-                        <td>$<%= booking.getFare() %></td>
-                    </tr>
+ <table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Booking ID</th>
+            <th>Pickup</th>
+            <th>Dropoff</th>
+            <th>Vehicle</th>
+            <th>Fare</th>
+            <th>Status</th>
+            <th>Invoice</th>
+        </tr>
+    </thead>
+    <tbody>
+        <%
+            List<Booking> bookings = BookingDAO.getBookingsByCustomer(loggedUser.getUserID());
+            for (Booking booking : bookings) {
+        %>
+        <tr>
+            <td><%= booking.getBookingID() %></td>
+            <td><%= booking.getPickupLat() %>, <%= booking.getPickupLng() %></td>
+            <td><%= booking.getDropoffLat() %>, <%= booking.getDropoffLng() %></td>
+            <td><%= booking.getVehicleType() %></td>
+            <td>$<%= booking.getTotalAmount() %></td>
+            <td><%= booking.getStatus() %></td>
+            <td>
+                <% if ("Completed".equals(booking.getStatus())) { %>
+                    <a href="<%= request.getContextPath() %>/BookingController?action=generateInvoice&bookingID=<%= booking.getBookingID() %>" 
+                       class="btn btn-primary btn-sm">
+                        <i class="fas fa-download"></i> Download Invoice
+                    </a>
+                <% } else { %>
+                    <span class="text-muted">Not Available</span>
                 <% } %>
-            <% } %>
-        </tbody>
-    </table>
+            </td>
+        </tr>
+        <% } %>
+    </tbody>
+</table>
+
 </div>
 
 <!-- Bootstrap JS -->

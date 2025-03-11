@@ -72,23 +72,17 @@
 	.feature-box:hover {
     	transform: scale(1.05);
     	background-color: #ffd700; /* Lighter shade for hover */
-    	transition: all 0.3s ease-in-out;
+
 	}
 
 /* Add animation to icons */
 	.feature-box i {
     	font-size: 3rem;
-    	transition: transform 0.3s ease-in-out;
+
 	}
 
 	.feature-box:hover i {
     	transform: scale(1.2); /* Slightly enlarges the icon */
-	}
-
-/* Add a smoother transition to text and icon */
-	.feature-box h4, .feature-box p {
-    	opacity: 0;
-    	transition: opacity 0.5s ease-out;
 	}
 
 	.feature-box:hover h4, .feature-box:hover p {

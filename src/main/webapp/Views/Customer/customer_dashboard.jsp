@@ -115,7 +115,7 @@
     <h4>Mega City Cab</h4>
             <a href="${pageContext.request.contextPath}/BookingController"><i class="fas fa-home"></i> Dashboard</a>
             <a href="${pageContext.request.contextPath}/Views/Customer/manage_profile.jsp" class="nav-link text-white"><i class="fas fa-user"></i> Manage Profile</a>
-            <a href="${pageContext.request.contextPath}/Views/Customer/book_ride.jsp" class="nav-link text-white"><i class="fas fa-taxi"></i> Book a Ride</a>
+            <a href="${pageContext.request.contextPath}/Views/Customer/book_ride.jsp?" class="nav-link text-white"><i class="fas fa-taxi"></i> Book a Ride</a>
             <a href="${pageContext.request.contextPath}/Views/Customer/booking_history.jsp" class="nav-link text-white"><i class="fas fa-history"></i> Booking History</a>
             <a href="${pageContext.request.contextPath}/Views/Customer/reviews.jsp" class="nav-link text-white"><i class="fas fa-star"></i> Reviews</a>
             <a href="${pageContext.request.contextPath}/Views/login.jsp?" class="nav-link text-danger"><i class="fas fa-sign-out-alt"></i> Logout</a>
@@ -154,7 +154,7 @@
         <div class="col-md-6">
             <div class="quick-action-card bg-success">
                 <h5><i class="fas fa-history"></i> View Booking History</h5>
-                <a href="booking_history.jsp" class="btn btn-light btn-sm">View History</a>
+                <a href="Views/Customer/booking_history.jsp?" class="btn btn-light btn-sm">View History</a>
             </div>
         </div>
     </div>

@@ -1,5 +1,6 @@
 package com.megacitycab.dao;
 import com.megacitycab.models.Booking;
+import com.megacitycab.models.User;
 import com.megacitycab.utils.*;
 import java.sql.*;
 import java.util.ArrayList;
@@ -292,6 +293,29 @@ return false;
             return false;
         }
     }
+    public static User getDriverById(int driverID) {
+        String sql = "SELECT * FROM Users WHERE UserID = ? AND Role = 'Driver'";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, driverID);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return new User(
+                    rs.getInt("UserID"),
+                    rs.getString("Name"),
+                    rs.getString("Email"),
+                    rs.getString("Phone"),
+                    rs.getString("Role"), sql, sql, null
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 
 
 
