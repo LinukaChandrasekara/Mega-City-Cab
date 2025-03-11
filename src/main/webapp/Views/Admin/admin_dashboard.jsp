@@ -147,34 +147,47 @@
         </div>
     </div>
 
-    <!-- Live Ride Status -->
-    <div class="card card-custom mt-4">
-        <div class="card-body">
-            <h5><i class="fas fa-car"></i> Live Ride Status</h5>
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Booking ID</th>
-                        <th>Customer</th>
-                        <th>Driver</th>
-                        <th>Status</th>
-                        <th>Fare</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% for (Map<String, String> ride : liveRides) { %>
-                        <tr>
-                            <td><%= ride.get("BookingID") %></td>
-                            <td><%= ride.get("CustomerID") %></td>
-                            <td><%= ride.get("DriverID") %></td>
-                            <td><%= ride.get("Status") %></td>
-                            <td>$<%= ride.get("Fare") %></td>
-                        </tr>
-                    <% } %>
-                </tbody>
-            </table>
-        </div>
+<!-- Live Ride Status -->
+<div class="card card-custom mt-4">
+    <div class="card-body">
+        <h5><i class="fas fa-car"></i> Live Ride Status</h5>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Booking ID</th>
+                    <th>Customer</th>
+                    <th>Driver</th>
+                    <th>Status</th>
+                    <th>Fare</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% for (Map<String, String> ride : liveRides) { 
+                    String status = ride.get("Status");
+                    String statusClass = "";
+
+                    // ✅ Set status colors
+                    if ("Pending".equals(status)) {
+                        statusClass = "badge bg-warning text-dark";
+                    } else if ("Confirmed".equals(status)) {
+                        statusClass = "badge bg-primary";
+                    } else if ("Ongoing".equals(status)) {
+                        statusClass = "badge bg-success";
+                    }
+                %>
+                <tr>
+                    <td><%= ride.get("BookingID") %></td>
+                    <td><i class="fas fa-user"></i> <%= ride.get("CustomerName") %></td>
+                    <td><i class="fas fa-id-card"></i> <%= ride.get("DriverName") %></td>
+                    <td><span class="<%= statusClass %>"><%= status %></span></td>
+                    <td><i class="fas fa-dollar-sign"></i> <%= ride.get("Fare") %></td>
+                </tr>
+                <% } %>
+            </tbody>
+        </table>
     </div>
+</div>
+
 
 </div>
 

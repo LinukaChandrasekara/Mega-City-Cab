@@ -4,7 +4,9 @@ import com.megacitycab.models.User;
 import com.megacitycab.utils.*;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class BookingDAO {
     public static List<Booking> getAllBookings() {
@@ -315,7 +317,33 @@ return false;
         }
         return null;
     }
+    public static List<Map<String, String>> getLiveRides() {
+        List<Map<String, String>> liveRides = new ArrayList<>();
+        String sql = "SELECT b.BookingID, u1.Name AS CustomerName, u2.Name AS DriverName, b.BookingStatus, b.TotalAmount " +
+                     "FROM Bookings b " +
+                     "JOIN Users u1 ON b.CustomerID = u1.UserID " +
+                     "LEFT JOIN Users u2 ON b.DriverID = u2.UserID " +
+                     "WHERE b.BookingStatus IN ('Pending', 'Confirmed', 'Ongoing')";
 
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                Map<String, String> ride = new HashMap<>();
+                ride.put("BookingID", String.valueOf(rs.getInt("BookingID")));
+                ride.put("CustomerName", rs.getString("CustomerName"));
+                ride.put("DriverName", rs.getString("DriverName") != null ? rs.getString("DriverName") : "Unassigned");
+                ride.put("Status", rs.getString("BookingStatus"));
+                ride.put("Fare", String.format("%.2f", rs.getDouble("TotalAmount")));
+
+                liveRides.add(ride);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return liveRides;
+    }
 
 
 
