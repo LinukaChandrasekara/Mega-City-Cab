@@ -20,7 +20,10 @@ import java.util.List;
 public class BookingController extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
         HttpSession session = request.getSession(false);
         if (session == null || session.getAttribute("user") == null) {
             response.sendRedirect(request.getContextPath() + "/Views/login.jsp?error=Session Expired");
@@ -43,7 +46,10 @@ public class BookingController extends HttpServlet {
         request.getRequestDispatcher("Views/Customer/customer_dashboard.jsp").forward(request, response);
     }
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
         String action = request.getParameter("action");
 
         if ("bookRide".equals(action)) {
@@ -55,6 +61,7 @@ public class BookingController extends HttpServlet {
         } else if ("makePayment".equals(action)) {
             handlePayment(request, response);
         }
+        // (No duplicate conditions here)
     }
 
     // ✅ Handle Ride Booking
@@ -91,7 +98,9 @@ public class BookingController extends HttpServlet {
             }
 
             boolean success = BookingDAO.createBooking(
-                customer.getUserID(), assignedDriverID, pickupLat, pickupLng, dropoffLat, dropoffLng, distance, fare, discount, vehicleType
+                customer.getUserID(), assignedDriverID,
+                pickupLat, pickupLng, dropoffLat, dropoffLng,
+                distance, fare, discount, vehicleType
             );
 
             if (success) {
@@ -106,21 +115,50 @@ public class BookingController extends HttpServlet {
         }
     }
 
-    // ✅ Handle Booking Status Update
-    private void handleUpdateBooking(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        int bookingID = Integer.parseInt(request.getParameter("bookingID"));
+    // ✅ Update Booking
+    private void handleUpdateBooking(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        String bookingIDParam = request.getParameter("bookingID");
         String status = request.getParameter("status");
+        HttpSession session = request.getSession();
+
+        if (bookingIDParam == null || bookingIDParam.isEmpty()) {
+            session.setAttribute("errorMessage", "Error: Invalid booking ID.");
+            // Use the full path to the Admin folder
+            request.getRequestDispatcher("Views/Admin/manage_bookings.jsp").forward(request, response);
+            return;
+        }
+
+        int bookingID;
+        try {
+            bookingID = Integer.parseInt(bookingIDParam);
+        } catch (NumberFormatException e) {
+            session.setAttribute("errorMessage", "Error: Booking ID must be a valid number.");
+            request.getRequestDispatcher("Views/Admin/manage_bookings.jsp").forward(request, response);
+            return;
+        }
 
         boolean success = BookingDAO.updateBookingStatus(bookingID, status);
-        response.sendRedirect("booking_history.jsp?" + (success ? "success=Booking updated successfully!" : "error=Failed to update booking."));
+
+        if (success) {
+            session.setAttribute("successMessage", "Booking updated successfully!");
+        } else {
+            session.setAttribute("errorMessage", "Failed to update booking.");
+        }
+
+        // Make sure you use the correct path for manage_bookings.jsp
+        request.getRequestDispatcher("Views/Admin/manage_bookings.jsp").forward(request, response);
     }
 
-    // ✅ Handle Booking Cancellation
+    // ✅ Cancel Booking
     private void handleCancelBooking(HttpServletRequest request, HttpServletResponse response) throws IOException {
         int bookingID = Integer.parseInt(request.getParameter("bookingID"));
 
-        boolean success = BookingDAO.updateBookingStatus(bookingID, "Cancelled");
-        response.sendRedirect("booking_history.jsp?" + (success ? "success=Booking cancelled successfully!" : "error=Failed to cancel booking."));
+        boolean success = BookingDAO.cancelBooking(bookingID);
+
+        response.setContentType("text/plain");
+        response.getWriter().write(success ? "Booking cancelled successfully!" : "Failed to cancel booking.");
     }
 
     // ✅ Handle Payment Processing
@@ -149,7 +187,8 @@ public class BookingController extends HttpServlet {
             PdfWriter.getInstance(document, out);
             document.open();
 
-            document.add(new Paragraph("Mega City Cab Invoice", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 18)));
+            document.add(new Paragraph("Mega City Cab Invoice",
+                    FontFactory.getFont(FontFactory.HELVETICA_BOLD, 18)));
             document.add(new Paragraph("Customer: " + booking.getCustomerID()));
             document.add(new Paragraph("Driver: " + (driver != null ? driver.getName() : "Not Assigned")));
             document.add(new Paragraph("Vehicle Type: " + booking.getVehicleType()));

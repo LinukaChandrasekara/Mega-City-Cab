@@ -18,6 +18,8 @@ public class Booking {
     private double totalAmount;
     private String status;
     private Timestamp bookingDate;
+	private String customerName;
+	private String driverName;
 
     // ✅ Constructor
     public Booking(int bookingID, int customerID, int driverID, double pickupLat, double pickupLng,
@@ -41,7 +43,30 @@ public class Booking {
         this.bookingDate = bookingDate;
     }
 
-    // ✅ Getters & Setters
+    public Booking(int bookingID, int customerID, String customerName, int driverID, String driverName, 
+            double pickupLat, double pickupLng, double dropoffLat, double dropoffLng, 
+            double distance, int estimatedTime, String vehicleType, double fare, 
+            double discount, double totalAmount, String status, Timestamp bookingDate) {
+ this.bookingID = bookingID;
+ this.customerID = customerID;
+ this.setCustomerName(customerName);
+ this.driverID = driverID;
+ this.setDriverName(driverName);
+ this.pickupLat = pickupLat;
+ this.pickupLng = pickupLng;
+ this.dropoffLat = dropoffLat;
+ this.dropoffLng = dropoffLng;
+ this.distance = distance;
+ this.estimatedTime = estimatedTime;
+ this.vehicleType = vehicleType;
+ this.fare = fare;
+ this.discount = discount;
+ this.totalAmount = totalAmount;
+ this.status = status;
+ this.bookingDate = bookingDate;
+}
+
+	// ✅ Getters & Setters
     public int getBookingID() { return bookingID; }
     public void setBookingID(int bookingID) { this.bookingID = bookingID; }
 
@@ -86,4 +111,20 @@ public class Booking {
 
     public Timestamp getBookingDate() { return bookingDate; }
     public void setBookingDate(Timestamp bookingDate) { this.bookingDate = bookingDate; }
+
+	public String getCustomerName() {
+		return customerName;
+	}
+
+	public void setCustomerName(String customerName) {
+		this.customerName = customerName;
+	}
+
+	public String getDriverName() {
+		return driverName;
+	}
+
+	public void setDriverName(String driverName) {
+		this.driverName = driverName;
+	}
 }

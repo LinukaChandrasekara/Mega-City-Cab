@@ -1,6 +1,8 @@
 package com.megacitycab.controllers;
 
 import com.megacitycab.dao.*;
+import com.megacitycab.models.Booking;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -31,6 +33,18 @@ public class AdminController extends HttpServlet {
         // ✅ Fetch live ride status (Pending, Confirmed, Ongoing)
         List<Map<String, String>> liveRides = BookingDAO.getLiveRides();
         request.setAttribute("liveRides", liveRides);
+        
+        // ✅ Fetch all bookings
+        List<Booking> bookings = BookingDAO.getAllBookings();
+        System.out.println("DEBUG: Retrieved " + bookings.size() + " bookings");  // Debugging
+
+        if (bookings.isEmpty()) {
+            System.out.println("DEBUG: No bookings found in database.");
+        } else {
+            System.out.println("DEBUG: First booking - ID: " + bookings.get(0).getBookingID());
+        }
+
+        request.setAttribute("bookings", bookings);
 
         // Set attributes for JSP
         request.setAttribute("totalBookings", totalBookings);
@@ -38,6 +52,7 @@ public class AdminController extends HttpServlet {
         request.setAttribute("totalDrivers", totalDrivers);
         request.setAttribute("totalRevenue", totalRevenue);
 
-        request.getRequestDispatcher("Views/Admin/admin_dashboard.jsp").forward(request, response);
+        request.getRequestDispatcher("/Views/Admin/manage_bookings.jsp").forward(request, response);
+
     }
 }

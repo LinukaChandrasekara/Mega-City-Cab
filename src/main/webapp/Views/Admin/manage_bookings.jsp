@@ -21,7 +21,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 
-    <!-- Custom Styles -->
     <style>
         body {
             background-color: #f8f9fa;
@@ -41,26 +40,10 @@
             font-weight: bold;
             color: #212529;
         }
-        .table {
-            border-radius: 10px;
-            overflow: hidden;
-        }
-        .table thead {
-            background-color: #ffc107;
-            color: #212529;
-        }
-        .btn-custom {
-            transition: 0.3s ease-in-out;
-        }
-        .btn-custom:hover {
-            transform: scale(1.05);
-        }
-        .modal-content {
-            border-radius: 10px;
-        }
-        .modal-header {
-            background-color: #ffc107;
-            color: #212529;
+        .alert {
+            position: relative;
+            padding: 10px;
+            margin-bottom: 15px;
         }
     </style>
 </head>
@@ -69,27 +52,41 @@
 <div class="container mt-4">
     <h2><i class="fas fa-tasks"></i> Manage Bookings</h2>
 
-    <!-- Search & Filter -->
-    <div class="row mb-3">
-        <div class="col-md-3">
-            <select id="filterStatus" class="form-control">
-                <option value="">All Statuses</option>
-                <option value="Pending">Pending</option>
-                <option value="Ongoing">Ongoing</option>
-                <option value="Completed">Completed</option>
-                <option value="Cancelled">Cancelled</option>
-            </select>
-        </div>
-        <div class="col-md-3">
-            <input type="date" id="filterDate" class="form-control">
-        </div>
-        <div class="col-md-3">
-            <input type="text" id="filterCustomer" class="form-control" placeholder="Search by Customer">
-        </div>
-        <div class="col-md-3">
-            <input type="text" id="filterDriver" class="form-control" placeholder="Search by Driver">
-        </div>
+    <!-- ✅ Bootstrap Alerts for Success & Error Messages -->
+    <% 
+    String successMessage = (String) session.getAttribute("successMessage");
+    String errorMessage = (String) session.getAttribute("errorMessage");
+
+    if (successMessage != null) { 
+    %>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="fas fa-check-circle"></i> <%= successMessage %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
+    <% 
+        session.removeAttribute("successMessage");
+    }
+    if (errorMessage != null) { 
+    %>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="fas fa-exclamation-circle"></i> <%= errorMessage %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <% 
+        session.removeAttribute("errorMessage");
+    }
+    %>
+
+    <!-- ✅ JavaScript to Auto-Hide Alerts After 5 Seconds -->
+    <script>
+        setTimeout(() => {
+            let alerts = document.querySelectorAll('.alert');
+            alerts.forEach(alert => {
+                alert.classList.remove('show');
+                alert.classList.add('fade');
+            });
+        }, 5000);
+    </script>
 
     <!-- Bookings Table -->
     <table class="table table-striped">
@@ -110,21 +107,21 @@
                 Object bookingsObj = request.getAttribute("bookings");
                 List<Booking> bookings = new ArrayList<>();
                 if (bookingsObj instanceof List<?>) { 
-                    bookings = (List<Booking>) bookingsObj; // ✅ Safe casting
+                    bookings = (List<Booking>) bookingsObj;
                 }
             %>
+
             <% for (Booking booking : bookings) { %>
                 <tr>
                     <td><%= booking.getBookingID() %></td>
-                    <td><%= booking.getCustomerID() %></td>
-                    <td><%= booking.getDriverID() != 0 ? booking.getDriverID() : "Not Assigned" %></td>
+                    <td><%= booking.getCustomerName() %></td>
+                    <td><%= booking.getDriverName() != null ? booking.getDriverName() : "Not Assigned" %></td>
                     <td><%= booking.getPickupLat() + ", " + booking.getPickupLng() %></td>
                     <td><%= booking.getDropoffLat() + ", " + booking.getDropoffLng() %></td>
                     <td><%= booking.getBookingDate() %></td>
                     <td><%= booking.getStatus() %></td>
                     <td>
                         <button class="btn btn-warning btn-sm btn-custom updateBtn" data-id="<%= booking.getBookingID() %>"><i class="fas fa-edit"></i> Update</button>
-                        <button class="btn btn-danger btn-sm btn-custom cancelBtn" data-id="<%= booking.getBookingID() %>"><i class="fas fa-ban"></i> Cancel</button>
                     </td>
                 </tr>
             <% } %>
@@ -132,51 +129,42 @@
     </table>
 </div>
 
-<!-- Update Booking Modal -->
+<!-- ✅ JavaScript to Set Booking ID in Modal -->
+<script>
+document.querySelectorAll('.updateBtn').forEach(button => {
+    button.addEventListener('click', function () {
+        let bookingID = this.getAttribute('data-id');
+        document.getElementById('updateBookingID').value = bookingID;
+        new bootstrap.Modal(document.getElementById('updateBookingModal')).show();
+    });
+});
+</script>
+
+<!-- ✅ Update Booking Modal -->
 <div class="modal fade" id="updateBookingModal" tabindex="-1" aria-labelledby="updateBookingModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="updateBookingModalLabel"><i class="fas fa-edit"></i> Update Booking Status</h5>
+                <h5 class="modal-title"><i class="fas fa-edit"></i> Update Booking Status</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form id="updateBookingForm" action="BookingController" method="post">
                     <input type="hidden" name="action" value="update">
                     <input type="hidden" name="bookingID" id="updateBookingID">
-                    <div class="mb-3">
-                        <label><strong>Status</strong></label>
-                        <select class="form-control" name="status" id="updateStatus">
-                            <option value="Pending">Pending</option>
-                            <option value="Ongoing">Ongoing</option>
-                            <option value="Completed">Completed</option>
-                            <option value="Cancelled">Cancelled</option>
-                        </select>
-                    </div>
-                    <button type="submit" class="btn btn-primary w-100">Update Booking</button>
+                    <label><strong>Status</strong></label>
+                    <select class="form-control" name="status">
+                        <option value="Pending">Pending</option>
+                        <option value="Ongoing">Ongoing</option>
+                        <option value="Completed">Completed</option>
+                        <option value="Cancelled">Cancelled</option>
+                    </select>
+                    <button type="submit" class="btn btn-primary w-100 mt-3">Update Booking</button>
                 </form>
             </div>
         </div>
     </div>
 </div>
-
-<!-- JavaScript for Modals & Actions -->
-<script>
-    document.querySelectorAll('.updateBtn').forEach(button => {
-        button.addEventListener('click', function() {
-            document.getElementById('updateBookingID').value = this.getAttribute('data-id');
-            new bootstrap.Modal(document.getElementById('updateBookingModal')).show();
-        });
-    });
-
-    document.querySelectorAll('.cancelBtn').forEach(button => {
-        button.addEventListener('click', function() {
-            if (confirm("Are you sure you want to cancel this booking?")) {
-                window.location.href = "BookingController?action=cancel&bookingID=" + this.getAttribute('data-id');
-            }
-        });
-    });
-</script>
 
 <!-- Bootstrap JS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
