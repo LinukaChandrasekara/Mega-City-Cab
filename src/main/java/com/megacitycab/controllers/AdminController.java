@@ -51,7 +51,7 @@ public class AdminController extends HttpServlet {
         request.setAttribute("totalCustomers", totalCustomers);
         request.setAttribute("totalDrivers", totalDrivers);
         request.setAttribute("totalRevenue", totalRevenue);
-
+        request.setAttribute("liveRides", liveRides);
         request.getRequestDispatcher("Views/Admin/admin_dashboard.jsp").forward(request, response);
 
     }

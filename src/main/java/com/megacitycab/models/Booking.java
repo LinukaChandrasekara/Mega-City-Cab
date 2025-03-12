@@ -47,23 +47,23 @@ public class Booking {
             double pickupLat, double pickupLng, double dropoffLat, double dropoffLng, 
             double distance, int estimatedTime, String vehicleType, double fare, 
             double discount, double totalAmount, String status, Timestamp bookingDate) {
- this.bookingID = bookingID;
- this.customerID = customerID;
- this.setCustomerName(customerName);
- this.driverID = driverID;
- this.setDriverName(driverName);
- this.pickupLat = pickupLat;
- this.pickupLng = pickupLng;
- this.dropoffLat = dropoffLat;
- this.dropoffLng = dropoffLng;
- this.distance = distance;
- this.estimatedTime = estimatedTime;
- this.vehicleType = vehicleType;
- this.fare = fare;
- this.discount = discount;
- this.totalAmount = totalAmount;
- this.status = status;
- this.bookingDate = bookingDate;
+        this.bookingID = bookingID;
+        this.customerID = customerID;
+        this.customerName = customerName;
+        this.driverID = driverID;
+        this.driverName = driverName;
+        this.pickupLat = pickupLat;
+        this.pickupLng = pickupLng;
+        this.dropoffLat = dropoffLat;
+        this.dropoffLng = dropoffLng;
+        this.distance = distance;
+        this.estimatedTime = estimatedTime;
+        this.vehicleType = vehicleType;
+        this.fare = fare;
+        this.discount = discount;
+        this.totalAmount = totalAmount;
+        this.status = status;
+        this.bookingDate = bookingDate;
 }
 
 	// ✅ Getters & Setters

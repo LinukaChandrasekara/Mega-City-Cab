@@ -10,57 +10,23 @@
         return;
     }
 %>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Manage Bookings | Mega City Cab</title>
+
     <!-- Bootstrap & Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    
-    <style>
-        /* Sidebar Styling */
-        .sidebar {
-            width: 260px;
-            height: 100vh;
-            position: fixed;
-            background-color: #212529;
-            padding-top: 20px;
-        }
-        .sidebar h4 {
-            text-align: center;
-            color: #FFC107;
-            font-weight: bold;
-            margin-bottom: 20px;
-        }
-        .sidebar a {
-            color: white;
-            padding: 12px;
-            display: flex;
-            align-items: center;
-            text-decoration: none;
-            font-size: 16px;
-            transition: 0.3s;
-        }
-        .sidebar a i {
-            margin-right: 10px;
-        }
-        .sidebar a:hover {
-            background-color: #343a40;
-            padding-left: 18px;
-        }
 
-        /* Main Content Styling */
-        .main-content {
-            margin-left: 280px; /* Sidebar width + gap */
-            padding: 20px;
-        }
+    <style>
         body {
             background-color: #f8f9fa;
             font-family: 'Arial', sans-serif;
         }
-        .container-custom {
+        .container {
             background: white;
             padding: 20px;
             border-radius: 10px;
@@ -73,7 +39,6 @@
             text-align: center;
             font-weight: bold;
             color: #212529;
-            margin-bottom: 20px;
         }
         .alert {
             position: relative;
@@ -83,140 +48,126 @@
     </style>
 </head>
 <body>
-    <!-- Sidebar -->
-    <div class="sidebar">
-        <h4>Mega City Cab</h4>
-        <a href="${pageContext.request.contextPath}/AdminController"><i class="fas fa-home"></i> Dashboard</a>
-        <a href="${pageContext.request.contextPath}/UserController"><i class="fas fa-users"></i> Manage Users</a>
-        <a href="${pageContext.request.contextPath}/Views/Admin/manage_bookings.jsp"><i class="fas fa-car"></i> Manage Bookings</a>
-        <a href="${pageContext.request.contextPath}/DriverController"><i class="fas fa-id-card"></i> Manage Drivers</a>
-        <a href="${pageContext.request.contextPath}/Views/Admin/reports.jsp"><i class="fas fa-chart-bar"></i> Reports</a>
-        <a href="${pageContext.request.contextPath}/Views/Admin/settings.jsp"><i class="fas fa-cogs"></i> Settings</a>
-        <a href="${pageContext.request.contextPath}/Views/login.jsp" class="text-danger"><i class="fas fa-sign-out-alt"></i> Logout</a>
+
+<div class="container mt-4">
+    <h2><i class="fas fa-tasks"></i> Manage Bookings</h2>
+
+    <!-- ✅ Bootstrap Alerts for Success & Error Messages -->
+    <% 
+    String successMessage = (String) session.getAttribute("successMessage");
+    String errorMessage = (String) session.getAttribute("errorMessage");
+
+    if (successMessage != null) { 
+    %>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="fas fa-check-circle"></i> <%= successMessage %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
-
-    <!-- Main Content -->
-    <div class="main-content">
-        <div class="container-custom">
-            <h2><i class="fas fa-tasks"></i> Manage Bookings</h2>
-
-            <!-- Bootstrap Alerts for Success & Error Messages -->
-            <%
-                String successMessage = (String) session.getAttribute("successMessage");
-                String errorMessage = (String) session.getAttribute("errorMessage");
-
-                if (successMessage != null) {
-            %>
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <i class="fas fa-check-circle"></i> <%= successMessage %>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-            <%
-                    session.removeAttribute("successMessage");
-                }
-                if (errorMessage != null) {
-            %>
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <i class="fas fa-exclamation-circle"></i> <%= errorMessage %>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-            <%
-                    session.removeAttribute("errorMessage");
-                }
-            %>
-
-            <!-- JavaScript to Auto-Hide Alerts After 5 Seconds -->
-            <script>
-                setTimeout(() => {
-                    let alerts = document.querySelectorAll('.alert');
-                    alerts.forEach(alert => {
-                        alert.classList.remove('show');
-                        alert.classList.add('fade');
-                    });
-                }, 5000);
-            </script>
-
-            <!-- Bookings Table -->
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Booking ID</th>
-                        <th>Customer</th>
-                        <th>Driver</th>
-                        <th>Pickup Location</th>
-                        <th>Drop-off Location</th>
-                        <th>Date</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="bookingTable">
-                    <%
-                        Object bookingsObj = request.getAttribute("bookings");
-                        List<Booking> bookings = new ArrayList<>();
-                        if (bookingsObj instanceof List<?>) { 
-                            bookings = (List<Booking>) bookingsObj;
-                        }
-                    %>
-                    <% for (Booking booking : bookings) { %>
-                    <tr>
-                        <td><%= booking.getBookingID() %></td>
-                        <td><%= booking.getCustomerName() %></td>
-                        <td><%= booking.getDriverName() != null ? booking.getDriverName() : "Not Assigned" %></td>
-                        <td><%= booking.getPickupLat() + ", " + booking.getPickupLng() %></td>
-                        <td><%= booking.getDropoffLat() + ", " + booking.getDropoffLng() %></td>
-                        <td><%= booking.getBookingDate() %></td>
-                        <td><%= booking.getStatus() %></td>
-                        <td>
-                            <button class="btn btn-warning btn-sm btn-custom updateBtn" data-id="<%= booking.getBookingID() %>">
-                                <i class="fas fa-edit"></i> Update
-                            </button>
-                        </td>
-                    </tr>
-                    <% } %>
-                </tbody>
-            </table>
-        </div>
+    <% 
+        session.removeAttribute("successMessage");
+    }
+    if (errorMessage != null) { 
+    %>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="fas fa-exclamation-circle"></i> <%= errorMessage %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
+    <% 
+        session.removeAttribute("errorMessage");
+    }
+    %>
 
-    <!-- JavaScript to Set Booking ID in Modal -->
+    <!-- ✅ JavaScript to Auto-Hide Alerts After 5 Seconds -->
     <script>
-        document.querySelectorAll('.updateBtn').forEach(button => {
-            button.addEventListener('click', function () {
-                let bookingID = this.getAttribute('data-id');
-                document.getElementById('updateBookingID').value = bookingID;
-                new bootstrap.Modal(document.getElementById('updateBookingModal')).show();
+        setTimeout(() => {
+            let alerts = document.querySelectorAll('.alert');
+            alerts.forEach(alert => {
+                alert.classList.remove('show');
+                alert.classList.add('fade');
             });
-        });
+        }, 5000);
     </script>
 
-    <!-- Update Booking Modal -->
-    <div class="modal fade" id="updateBookingModal" tabindex="-1" aria-labelledby="updateBookingModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"><i class="fas fa-edit"></i> Update Booking Status</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="updateBookingForm" action="BookingController" method="post">
-                        <input type="hidden" name="action" value="update">
-                        <input type="hidden" name="bookingID" id="updateBookingID">
-                        <label><strong>Status</strong></label>
-                        <select class="form-control" name="status">
-                            <option value="Pending">Pending</option>
-                            <option value="Ongoing">Ongoing</option>
-                            <option value="Completed">Completed</option>
-                            <option value="Cancelled">Cancelled</option>
-                        </select>
-                        <button type="submit" class="btn btn-primary w-100 mt-3">Update Booking</button>
-                    </form>
-                </div>
+    <!-- Bookings Table -->
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Booking ID</th>
+                <th>Customer</th>
+                <th>Driver</th>
+                <th>Pickup Location</th>
+                <th>Drop-off Location</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="bookingTable">
+            <%
+  Object bookingsObj = request.getAttribute("bookings");
+  List<Booking> bookings = new ArrayList<>();
+  if (bookingsObj instanceof List<?>) { 
+      bookings = (List<Booking>) bookingsObj;
+  }
+%>
+
+            <% for (Booking booking : bookings) { %>
+                <tr>
+                    <td><%= booking.getBookingID() %></td>
+                    <td><%= booking.getCustomerName() %></td>
+                    <td><%= booking.getDriverName() != null ? booking.getDriverName() : "Not Assigned" %></td>
+                    <td><%= booking.getPickupLat() + ", " + booking.getPickupLng() %></td>
+                    <td><%= booking.getDropoffLat() + ", " + booking.getDropoffLng() %></td>
+                    <td><%= booking.getBookingDate() %></td>
+                    <td><%= booking.getStatus() %></td>
+                    <td>
+                        <button class="btn btn-warning btn-sm btn-custom updateBtn" data-id="<%= booking.getBookingID() %>"><i class="fas fa-edit"></i> Update</button>
+                    </td>
+                </tr>
+            <% } %>
+        </tbody>
+    </table>
+</div>
+
+<!-- ✅ JavaScript to Set Booking ID in Modal -->
+<script>
+document.querySelectorAll('.updateBtn').forEach(button => {
+    button.addEventListener('click', function () {
+        let bookingID = this.getAttribute('data-id');
+        document.getElementById('updateBookingID').value = bookingID;
+        new bootstrap.Modal(document.getElementById('updateBookingModal')).show();
+    });
+});
+</script>
+
+<!-- ✅ Update Booking Modal -->
+<div class="modal fade" id="updateBookingModal" tabindex="-1" aria-labelledby="updateBookingModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fas fa-edit"></i> Update Booking Status</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="updateBookingForm" action="BookingController" method="post">
+                    <input type="hidden" name="action" value="update">
+                    <input type="hidden" name="bookingID" id="updateBookingID">
+                    <label><strong>Status</strong></label>
+                    <select class="form-control" name="status">
+                        <option value="Pending">Pending</option>
+                        <option value="Ongoing">Ongoing</option>
+                        <option value="Completed">Completed</option>
+                        <option value="Cancelled">Cancelled</option>
+                    </select>
+                    <button type="submit" class="btn btn-primary w-100 mt-3">Update Booking</button>
+                </form>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<!-- Bootstrap JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>

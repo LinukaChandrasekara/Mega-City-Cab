@@ -1,23 +1,40 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="java.util.List, java.util.Map" %>
+<%@ page import="jakarta.servlet.http.HttpSession" %>
 <%@ page import="com.megacitycab.models.User" %>
 
 <%
+    // Ensure only Admin users can access
     HttpSession userSession = request.getSession(false);
-    if (userSession == null || userSession.getAttribute("userRole") == null || !"Admin".equals(userSession.getAttribute("userRole"))) {
+    if (userSession == null 
+        || userSession.getAttribute("userRole") == null 
+        || !"Admin".equals(userSession.getAttribute("userRole"))) {
+        
         response.sendRedirect("../login.jsp?error=Unauthorized Access!");
         return;
     }
 %>
 
 <%
-    int totalBookings = request.getAttribute("totalBookings") != null ? (int) request.getAttribute("totalBookings") : 0;
-    int totalCustomers = request.getAttribute("totalCustomers") != null ? (int) request.getAttribute("totalCustomers") : 0;
-    int totalDrivers = request.getAttribute("totalDrivers") != null ? (int) request.getAttribute("totalDrivers") : 0;
-    double totalRevenue = request.getAttribute("totalRevenue") != null ? (double) request.getAttribute("totalRevenue") : 0.0;
+    // Retrieve stats & live rides from request attributes
+    int totalBookings = request.getAttribute("totalBookings") != null
+                        ? (int) request.getAttribute("totalBookings")
+                        : 0;
+    int totalCustomers = request.getAttribute("totalCustomers") != null
+                        ? (int) request.getAttribute("totalCustomers")
+                        : 0;
+    int totalDrivers = request.getAttribute("totalDrivers") != null
+                       ? (int) request.getAttribute("totalDrivers")
+                       : 0;
+    double totalRevenue = request.getAttribute("totalRevenue") != null
+                          ? (double) request.getAttribute("totalRevenue")
+                          : 0.0;
 
+    // Live rides list of maps: BookingID, CustomerName, DriverName, Status, Fare
     Object liveRidesObj = request.getAttribute("liveRides");
-    List<Map<String, String>> liveRides = liveRidesObj instanceof List ? (List<Map<String, String>>) liveRidesObj : List.of();
+    List<Map<String, String>> liveRides = liveRidesObj instanceof List
+                                          ? (List<Map<String, String>>) liveRidesObj
+                                          : List.of();
 %>
 
 <!DOCTYPE html>
@@ -27,8 +44,10 @@
     <title>Admin Dashboard | Mega City Cab</title>
 
     <!-- Bootstrap & Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 
     <!-- Custom Styles -->
     <style>
@@ -95,13 +114,33 @@
 <!-- Sidebar -->
 <div class="sidebar">
     <h4>Mega City Cab</h4>
-    <a href="${pageContext.request.contextPath}/AdminController?action=dashboard"><i class="fas fa-home"></i> Dashboard</a>
-    <a href="${pageContext.request.contextPath}/UserController"><i class="fas fa-users"></i> Manage Users</a>
-    <a href="${pageContext.request.contextPath}/Views/Admin/manage_bookings.jsp"><i class="fas fa-car"></i> Manage Bookings</a>
-    <a href="${pageContext.request.contextPath}/DriverController"><i class="fas fa-id-card"></i> Manage Drivers</a>
-    <a href="${pageContext.request.contextPath}/Views/Admin/reports.jsp"><i class="fas fa-chart-bar"></i> Reports</a>
-    <a href="${pageContext.request.contextPath}/Views/Admin/settings.jsp"><i class="fas fa-cogs"></i> Settings</a>
-    <a href="${pageContext.request.contextPath}/Views/login.jsp?" class="text-danger"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    <a href="${pageContext.request.contextPath}/AdminController?action=dashboard">
+        <i class="fas fa-home"></i> Dashboard
+    </a>
+    <a href="${pageContext.request.contextPath}/UserController">
+        <i class="fas fa-users"></i> Manage Users
+    </a>
+    <!-- IMPORTANT: Instead of directly linking the JSP,
+         link a servlet that sets 'bookings' and forwards
+         to manage_bookings.jsp -->
+    <a href="${pageContext.request.contextPath}/BookingController?action=manage">
+        <i class="fas fa-car"></i> Manage Bookings
+    </a>
+    <a href="${pageContext.request.contextPath}/DriverController">
+        <i class="fas fa-id-card"></i> Manage Drivers
+    </a>
+    <a href="${pageContext.request.contextPath}/Views/Admin/reports.jsp">
+        <i class="fas fa-chart-bar"></i> Reports
+    </a>
+    <a href="${pageContext.request.contextPath}/Views/Admin/admin_reviews.jsp">
+        <i class="fas fa-cogs"></i> Reviews
+    </a>
+    <a href="${pageContext.request.contextPath}/Views/Admin/settings.jsp">
+        <i class="fas fa-cogs"></i> Settings
+    </a>
+    <a href="${pageContext.request.contextPath}/Views/login.jsp?" class="text-danger">
+        <i class="fas fa-sign-out-alt"></i> Logout
+    </a>
 </div>
 
 <!-- Main Content -->
@@ -147,48 +186,57 @@
         </div>
     </div>
 
-<!-- Live Ride Status -->
-<div class="card card-custom mt-4">
-    <div class="card-body">
-        <h5><i class="fas fa-car"></i> Live Ride Status</h5>
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Booking ID</th>
-                    <th>Customer</th>
-                    <th>Driver</th>
-                    <th>Status</th>
-                    <th>Fare</th>
-                </tr>
-            </thead>
-            <tbody>
-                <% for (Map<String, String> ride : liveRides) { 
-                    String status = ride.get("Status");
-                    String statusClass = "";
+    <!-- Live Ride Status -->
+    <div class="card card-custom mt-4">
+        <div class="card-body">
+            <h5><i class="fas fa-car"></i> Live Ride Status</h5>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Booking ID</th>
+                        <th>Customer</th>
+                        <th>Driver</th>
+                        <th>Status</th>
+                        <th>Fare</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <%
+                        for (Map<String, String> ride : liveRides) {
+                            String status = ride.get("Status");
+                            String statusClass = "";
 
-                    // ✅ Set status colors
-                    if ("Pending".equals(status)) {
-                        statusClass = "badge bg-warning text-dark";
-                    } else if ("Confirmed".equals(status)) {
-                        statusClass = "badge bg-primary";
-                    } else if ("Ongoing".equals(status)) {
-                        statusClass = "badge bg-success";
-                    }
-                %>
-                <tr>
-                    <td><%= ride.get("BookingID") %></td>
-                    <td><i class="fas fa-user"></i> <%= ride.get("CustomerName") %></td>
-                    <td><i class="fas fa-id-card"></i> <%= ride.get("DriverName") %></td>
-                    <td><span class="<%= statusClass %>"><%= status %></span></td>
-                    <td><i class="fas fa-dollar-sign"></i> <%= ride.get("Fare") %></td>
-                </tr>
-                <% } %>
-            </tbody>
-        </table>
+                            // Assign different badge colors based on ride status
+                            if ("Pending".equals(status)) {
+                                statusClass = "badge bg-warning text-dark";
+                            } else if ("Confirmed".equals(status)) {
+                                statusClass = "badge bg-primary";
+                            } else if ("Ongoing".equals(status)) {
+                                statusClass = "badge bg-success";
+                            } else if ("Completed".equals(status)) {
+                                statusClass = "badge bg-secondary";
+                            } else if ("Cancelled".equals(status)) {
+                                statusClass = "badge bg-danger";
+                            }
+                    %>
+                    <tr>
+                        <td><%= ride.get("BookingID") %></td>
+                        <td><i class="fas fa-user"></i> <%= ride.get("CustomerName") %></td>
+                        <td><i class="fas fa-id-card"></i> <%= ride.get("DriverName") %></td>
+                        <td>
+                            <span class="<%= statusClass %>"><%= status %></span>
+                        </td>
+                        <td>
+                            <i class="fas fa-dollar-sign"></i> <%= ride.get("Fare") %>
+                        </td>
+                    </tr>
+                    <%
+                        } // end for
+                    %>
+                </tbody>
+            </table>
+        </div>
     </div>
-</div>
-
-
 </div>
 
 <!-- Bootstrap JS -->

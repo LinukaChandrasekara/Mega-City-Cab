@@ -21,25 +21,26 @@ public class BookingDAO {
 	         ResultSet rs = stmt.executeQuery()) {
 
 	        while (rs.next()) {
-	            Booking booking = new Booking(
-	                rs.getInt("BookingID"),
-	                rs.getInt("CustomerID"),
-	                rs.getString("CustomerName"),
-	                rs.getInt("DriverID"),
-	                rs.getString("DriverName"),
-	                rs.getDouble("PickupLat"),
-	                rs.getDouble("PickupLng"),
-	                rs.getDouble("DropoffLat"),
-	                rs.getDouble("DropoffLng"),
-	                rs.getDouble("Distance"),
-	                rs.getInt("EstimatedTime"),
-	                rs.getString("VehicleType"),
-	                rs.getDouble("Fare"),
-	                rs.getDouble("Discount"),
-	                rs.getDouble("TotalAmount"),
-	                rs.getString("BookingStatus"),
-	                rs.getTimestamp("BookingDate")
-	            );
+	        	Booking booking = new Booking(
+	        		    rs.getInt("BookingID"),
+	        		    rs.getInt("CustomerID"),
+	        		    rs.getString("CustomerName"),
+	        		    rs.getInt("DriverID"),
+	        		    rs.getString("DriverName"),
+	        		    rs.getDouble("PickupLat"),
+	        		    rs.getDouble("PickupLng"),
+	        		    rs.getDouble("DropoffLat"),
+	        		    rs.getDouble("DropoffLng"),
+	        		    rs.getDouble("Distance"),
+	        		    rs.getInt("EstimatedTime"),
+	        		    rs.getString("VehicleType"),
+	        		    rs.getDouble("Fare"),
+	        		    rs.getDouble("Discount"),
+	        		    rs.getDouble("TotalAmount"),
+	        		    rs.getString("BookingStatus"),
+	        		    rs.getTimestamp("BookingDate")
+	        		);
+
 
 	            System.out.println("DEBUG: Booking ID: " + booking.getBookingID() +
 	                               ", Customer: " + booking.getCustomerName() +

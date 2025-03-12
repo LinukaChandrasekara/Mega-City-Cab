@@ -38,16 +38,13 @@ public class CustomerController extends HttpServlet {
         User customer = (User) session.getAttribute("user");
         // ✅ Fetch booking history
         List<Booking> recentBookings = BookingDAO.getRecentBookings(customer.getUserID());
-
+        request.setAttribute("recentBookings", recentBookings);
         // ✅ Fetch available discounts
         List<Map<String, String>> discounts = CustomerDAO.getAvailableDiscounts();
-
-        // ✅ Set data in request scope
-        request.setAttribute("recentBookings", recentBookings);
         request.setAttribute("discounts", discounts);
 
         // ✅ Forward to the customer dashboard
-        request.getRequestDispatcher("Views/Customer/customer_dashboard.jsp").forward(request, response);
+        request.getRequestDispatcher("/Views/Customer/customer_dashboard.jsp").forward(request, response);
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

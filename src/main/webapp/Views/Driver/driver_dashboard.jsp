@@ -128,7 +128,7 @@ body {
     <a href="${pageContext.request.contextPath}/Views/Driver/manage_profile.jsp"><i class="fas fa-user"></i> Manage Profile</a>
     <a href="${pageContext.request.contextPath}/Views/Driver/manage_vehicle.jsp"><i class="fas fa-car"></i> Manage Vehicle</a>
     <a href="${pageContext.request.contextPath}/Views/Driver/available_bookings.jsp"><i class="fas fa-list"></i> Available Bookings</a>
-    <a href="${pageContext.request.contextPath}/Views/Driver/customer_reviews.jsp"><i class="fas fa-star"></i> Reviews</a>
+    <a href="${pageContext.request.contextPath}/Views/Driver/driver_reviews.jsp"><i class="fas fa-star"></i> Reviews</a>
     <a href="${pageContext.request.contextPath}/Views/Driver/earnings_dashboard.jsp"><i class="fas fa-dollar-sign"></i> Earnings</a>
     <a href="${pageContext.request.contextPath}/Views/login.jsp?" class="text-danger"><i class="fas fa-sign-out-alt"></i> Logout</a>
 </div>
