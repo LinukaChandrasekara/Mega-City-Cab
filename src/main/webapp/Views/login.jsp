@@ -1,6 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<!DOCTYPE html>
-<% 
+<%
+    // Keep your cookie logic
     String savedIdentifier = "";
     Cookie[] cookies = request.getCookies();
     if (cookies != null) {
@@ -12,54 +12,122 @@
         }
     }
 %>
-<% if (request.getParameter("success") != null) { %>
-    <div class="alert alert-success text-center">
-        <%= request.getParameter("success") %>
-    </div>
-<% } %>
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mega City Cab | Login</title>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
     <!-- Bootstrap & FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     
     <!-- Custom Styles -->
-    <link rel="stylesheet" href="style.css">
     <style>
+        /* Body & Background */
         body {
-            background-color: #FFD700;
+            /* Retro-inspired gradient background */
+            background: linear-gradient(135deg, #ffcc00 0%, #ff66cc 100%);
+            background-repeat: no-repeat;
+            background-attachment: fixed;
             font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #fff; /* Default text color */
         }
-        .login-container {
+        
+        /* Full-height container to center content vertically */
+        .login-wrapper {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center; /* Center form horizontally */
+        }
+        
+        /* Single-column form container with retro styling */
+        .login-form-section {
+            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black overlay */
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 450px;
+        }
+        
+        /* Retro Heading */
+        .retro-heading {
+            font-family: 'Courier New', monospace;
+            font-size: 2rem;
+            color: #ffef00; /* Bright yellow for retro vibe */
+            text-shadow: 2px 2px #000;
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Logo Image */
+        .logo-img {
+            width: 80px;
+            height: auto;
+            display: block;
+            margin: 0 auto 1rem auto;
+        }
+        
+        /* Social Icons Container */
+        .social-icons {
             display: flex;
             justify-content: center;
-            align-items: center;
-            height: 100vh;
+            gap: 15px;
+            margin-bottom: 1rem;
         }
-        .login-box {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-            text-align: center;
+        .social-icons a {
+            color: #fff;
+            font-size: 1.2rem;
+            transition: transform 0.3s;
         }
-        .logo img {
-            width: 80px;
-            margin-bottom: 15px;
+        .social-icons a:hover {
+            transform: scale(1.2);
         }
-        .btn-primary {
-            background-color: black;
+        
+        /* Alerts */
+        .alert {
+            margin-bottom: 1rem;
+        }
+        
+        /* Input Groups */
+        .input-group-text {
+            background-color: #ffc107;
             border: none;
+            color: #212529;
+        }
+        .form-control:focus {
+            box-shadow: none;
+            border-color: #ffc107;
+        }
+        
+        /* Buttons */
+        .btn-primary {
+            background-color: #FFC107;
+            border: none;
+            color: #212529;
         }
         .btn-primary:hover {
-            background-color: #333;
+            background-color: #ffca2c;
+        }
+        
+        .form-check-label {
+            margin-left: 5px;
+        }
+        
+        /* Links */
+        .login-links {
+            margin-top: 1rem;
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
         }
         .login-links a {
-            color: black;
+            color: #fff;
             text-decoration: none;
             font-weight: 500;
         }
@@ -69,47 +137,85 @@
     </style>
 </head>
 <body>
-
-<div class="login-container">
-    <div class="login-box">
-        <div class="logo">
-            <img src="/images/logo.png" alt="Mega City Cab">
+    <!-- Display success message if any -->
+    <% if (request.getParameter("success") != null) { %>
+        <div class="alert alert-success text-center m-0">
+            <%= request.getParameter("success") %>
         </div>
-        <h2>Welcome Back!</h2>
-        
-        <% if (request.getAttribute("error") != null) { %>
-            <div class="alert alert-danger text-center">
-                <%= request.getAttribute("error") %>
+    <% } %>
+    
+    <div class="login-wrapper">
+        <!-- Single-column login form -->
+        <div class="login-form-section">
+            
+            <!-- Logo (Optional) -->
+            <img src="<%= request.getContextPath() %>/images/logo.png" alt="Mega City Cab Logo" class="logo-img">
+            
+            <!-- Retro Heading -->
+            <h1 class="retro-heading text-center">MEGA CITY CAB</h1>
+            
+            <!-- Social Icons -->
+            <div class="social-icons">
+                <a href="#"><i class="fab fa-facebook"></i></a>
+                <a href="#"><i class="fab fa-google"></i></a>
+                <a href="#"><i class="fab fa-x-twitter"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
             </div>
-        <% } %>
-        
-        <form action="${pageContext.request.contextPath}/AuthController" method="post">
+            
+            <h2 class="text-center">Login to Your Account</h2>
+
+            <!-- Display error message if any -->
+            <% if (request.getAttribute("error") != null) { %>
+                <div class="alert alert-danger text-center">
+                    <%= request.getAttribute("error") %>
+                </div>
+            <% } %>
+
+            <!-- Login Form -->
+            <form action="${pageContext.request.contextPath}/AuthController" method="post">
+                <div class="input-group mb-3">
+                    <span class="input-group-text"><i class="fas fa-user"></i></span>
+                    <input 
+                        type="text" 
+                        class="form-control" 
+                        name="identifier" 
+                        placeholder="Email or Username" 
+                        value="<%= savedIdentifier %>" 
+                        required
+                    >
+                </div>
 
                 <div class="input-group mb-3">
-        <span class="input-group-text"><i class="fas fa-user"></i></span>
-        <input type="text" class="form-control" name="identifier" placeholder="Email or Username" value="<%= savedIdentifier %>" required>
-    </div>
-    <div class="input-group mb-3">
-        <span class="input-group-text"><i class="fas fa-lock"></i></span>
-        <input type="password" class="form-control" name="password" placeholder="Password" required>
-    </div>
-    <div class="form-check mb-3">
-        <input type="checkbox" class="form-check-input" id="rememberMe" name="rememberMe">
-        <label class="form-check-label" for="rememberMe">Remember Me</label>
-    </div>
-    <button type="submit" class="btn btn-primary w-100">Login</button>
+                    <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                    <input 
+                        type="password" 
+                        class="form-control" 
+                        name="password" 
+                        placeholder="Password" 
+                        required
+                    >
+                </div>
 
-            <div class="login-links mt-3">
-                <a href="forgotPassword.jsp">Forgot Password?</a>
-                <span>|</span>
-                <a href="register.jsp">Register Now</a>
-            </div>
-        </form>
+                <div class="form-check mb-3 text-start">
+                    <input type="checkbox" class="form-check-input" id="rememberMe" name="rememberMe">
+                    <label class="form-check-label" for="rememberMe">Remember Me</label>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </button>
+
+                <div class="login-links">
+                    <a href="forgotPassword.jsp">Forgot Password?</a>
+                    <span>|</span>
+                    <a href="register.jsp">Register Here</a>
+                </div>
+            </form>
+            <!-- End of Login Form -->
+        </div>
     </div>
-</div>
-
-<!-- Bootstrap JS -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

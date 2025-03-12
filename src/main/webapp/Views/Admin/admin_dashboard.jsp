@@ -95,7 +95,7 @@
 <!-- Sidebar -->
 <div class="sidebar">
     <h4>Mega City Cab</h4>
-    <a href="${pageContext.request.contextPath}/AdminController"><i class="fas fa-home"></i> Dashboard</a>
+    <a href="${pageContext.request.contextPath}/AdminController?action=dashboard"><i class="fas fa-home"></i> Dashboard</a>
     <a href="${pageContext.request.contextPath}/UserController"><i class="fas fa-users"></i> Manage Users</a>
     <a href="${pageContext.request.contextPath}/Views/Admin/manage_bookings.jsp"><i class="fas fa-car"></i> Manage Bookings</a>
     <a href="${pageContext.request.contextPath}/DriverController"><i class="fas fa-id-card"></i> Manage Drivers</a>

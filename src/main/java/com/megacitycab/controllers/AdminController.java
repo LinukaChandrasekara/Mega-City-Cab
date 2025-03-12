@@ -52,7 +52,7 @@ public class AdminController extends HttpServlet {
         request.setAttribute("totalDrivers", totalDrivers);
         request.setAttribute("totalRevenue", totalRevenue);
 
-        request.getRequestDispatcher("/Views/Admin/manage_bookings.jsp").forward(request, response);
+        request.getRequestDispatcher("Views/Admin/admin_dashboard.jsp").forward(request, response);
 
     }
 }
