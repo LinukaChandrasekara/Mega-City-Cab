@@ -40,7 +40,7 @@ public class RegisterController extends HttpServlet {
         boolean success = RegisterDAO.registerUser(name, email, phone, address, password, role, profilePictureStream);
 
         if (success) {
-            response.sendRedirect("../login.jsp?success=Registered successfully!");
+            response.sendRedirect("Views/login.jsp?success=Registered successfully!");
         } else {
             request.setAttribute("error", "Registration failed! Try again.");
             request.getRequestDispatcher("register.jsp").forward(request, response);

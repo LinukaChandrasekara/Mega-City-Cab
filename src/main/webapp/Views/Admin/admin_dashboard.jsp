@@ -176,14 +176,14 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="card card-custom text-white bg-danger">
-                <div class="card-body text-center">
-                    <h5><i class="fas fa-dollar-sign"></i> Total Revenue</h5>
-                    <h2>$<%= totalRevenue %></h2>
-                </div>
-            </div>
-        </div>
+		<div class="col-md-3">
+		    <div class="card card-custom text-white bg-danger">
+		        <div class="card-body text-center">
+		            <h5><i class="fas fa-dollar-sign"></i> Total Revenue</h5>
+		            <h2>$<%= String.format("%.2f", totalRevenue) %></h2>
+		        </div>
+		    </div>
+		</div>
     </div>
 
     <!-- Live Ride Status -->

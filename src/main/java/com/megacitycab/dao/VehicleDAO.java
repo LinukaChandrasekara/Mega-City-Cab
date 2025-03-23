@@ -38,48 +38,64 @@ public class VehicleDAO {
 	    return null;
 	}
 
-    // ✅ Update vehicle details
-	public static boolean updateVehicle(int driverID, String vehicleType, String model, String licensePlate, String availabilityStatus) {
-	    String query = "INSERT INTO Vehicles (DriverID, Type, Model, LicensePlate, AvailabilityStatus) " +
-	                   "VALUES (?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE " +
-	                   "Type = VALUES(Type), Model = VALUES(Model), LicensePlate = VALUES(LicensePlate), AvailabilityStatus = VALUES(AvailabilityStatus)";
-
-	    try (Connection conn = DBConnection.getConnection();
-	         PreparedStatement stmt = conn.prepareStatement(query)) {
-
-	        stmt.setInt(1, driverID);
-	        stmt.setString(2, vehicleType);
-	        stmt.setString(3, model);
-	        stmt.setString(4, licensePlate);
-	        stmt.setString(5, availabilityStatus);
-
-	        return stmt.executeUpdate() > 0;
-	    } catch (SQLException e) {
-	        e.printStackTrace();
+	public static boolean updateVehicle(int driverID, String vehicleType, String model, 
+            String licensePlate, String availabilityStatus) {
+	    // Check for duplicate license plate
+	    if (isLicensePlateExists(licensePlate, driverID)) {
+	        throw new IllegalArgumentException("License plate already in use!");
 	    }
-	    return false;
+
+		String query = "UPDATE Vehicles SET Type=?, Model=?, LicensePlate=?, AvailabilityStatus=? " +
+				"WHERE DriverID=?";
+
+		try (Connection conn = DBConnection.getConnection();
+				PreparedStatement stmt = conn.prepareStatement(query)) {
+
+			stmt.setString(1, vehicleType);
+			stmt.setString(2, model);
+			stmt.setString(3, licensePlate);
+			stmt.setString(4, availabilityStatus);
+			stmt.setInt(5, driverID);
+
+			return stmt.executeUpdate() > 0;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 
+	public static boolean insertVehicle(int driverID, String type, String model, 
+            String licensePlate, String availabilityStatus) {
+			String query = "INSERT INTO Vehicles (DriverID, Type, Model, LicensePlate, AvailabilityStatus) " +
+				"VALUES (?, ?, ?, ?, ?)";
 
-	// ✅ Insert new vehicle details (if the driver does not have a vehicle yet)
-	public static boolean insertVehicle(int driverId, String type, String model, String licensePlate, String availabilityStatus) {
-	    String query = "INSERT INTO Vehicles (DriverID, Type, Model, LicensePlate, AvailabilityStatus) VALUES (?, ?, ?, ?, ?)";
+			try (Connection conn = DBConnection.getConnection();
+					PreparedStatement stmt = conn.prepareStatement(query)) {
 
+					stmt.setInt(1, driverID);
+					stmt.setString(2, type);
+					stmt.setString(3, model);
+					stmt.setString(4, licensePlate);
+					stmt.setString(5, availabilityStatus);
+
+					return stmt.executeUpdate() > 0;
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			return false;
+	}
+	public static boolean isLicensePlateExists(String licensePlate, int excludeDriverID) {
+	    String query = "SELECT COUNT(*) FROM Vehicles WHERE LicensePlate = ? AND DriverID != ?";
 	    try (Connection conn = DBConnection.getConnection();
 	         PreparedStatement stmt = conn.prepareStatement(query)) {
-
-	        stmt.setInt(1, driverId);
-	        stmt.setString(2, type);
-	        stmt.setString(3, model);
-	        stmt.setString(4, licensePlate);
-	        stmt.setString(5, availabilityStatus); // ✅ Store availability status
-
-	        return stmt.executeUpdate() > 0;
+	        stmt.setString(1, licensePlate);
+	        stmt.setInt(2, excludeDriverID);
+	        ResultSet rs = stmt.executeQuery();
+	        return rs.next() && rs.getInt(1) > 0;
 	    } catch (SQLException e) {
 	        e.printStackTrace();
+	        return false;
 	    }
-	    return false;
 	}
-
 }
 

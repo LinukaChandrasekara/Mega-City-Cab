@@ -113,7 +113,7 @@
 <!-- Sidebar -->
 <div class="sidebar">
     <h4>Mega City Cab</h4>
-            <a href="${pageContext.request.contextPath}/BookingController?action=manage"><i class="fas fa-home"></i> Dashboard</a>
+            <a href="${pageContext.request.contextPath}/BookingController?action=dashboard"><i class="fas fa-home"></i> Dashboard</a>
             <a href="${pageContext.request.contextPath}/Views/Customer/manage_profile.jsp" class="nav-link text-white"><i class="fas fa-user"></i> Manage Profile</a>
             <a href="${pageContext.request.contextPath}/Views/Customer/book_ride.jsp?" class="nav-link text-white"><i class="fas fa-taxi"></i> Book a Ride</a>
             <a href="${pageContext.request.contextPath}/Views/Customer/booking_history.jsp" class="nav-link text-white"><i class="fas fa-history"></i> Booking History</a>
@@ -138,7 +138,7 @@
                 <h4 class="mb-1">Hi, <%= loggedUser.getName() %>!</h4>
                 <p><i class="fas fa-envelope"></i> Email: <%= loggedUser.getEmail() %></p>
                 <p><i class="fas fa-phone"></i> Phone: <%= loggedUser.getPhone() %></p>
-                <a href="manage_profile.jsp" class="btn btn-warning btn-sm">Edit Profile</a>
+                <a href="${pageContext.request.contextPath}/Views/Customer/manage_profile.jsp" class="btn btn-warning btn-sm">Edit Profile</a>
             </div>
         </div>
     </div>
@@ -148,13 +148,13 @@
         <div class="col-md-6">
             <div class="quick-action-card bg-primary">
                 <h5><i class="fas fa-taxi"></i> Book a Ride</h5>
-                <a href="book_ride.jsp" class="btn btn-light btn-sm">Start Booking</a>
+                <a href="${pageContext.request.contextPath}/Views/Customer/book_ride.jsp?" class="btn btn-light btn-sm">Start Booking</a>
             </div>
         </div>
         <div class="col-md-6">
             <div class="quick-action-card bg-success">
                 <h5><i class="fas fa-history"></i> View Booking History</h5>
-                <a href="Views/Customer/booking_history.jsp?" class="btn btn-light btn-sm">View History</a>
+                <a href="${pageContext.request.contextPath}/Views/Customer/booking_history.jsp" class="btn btn-light btn-sm">View History</a>
             </div>
         </div>
     </div>
@@ -183,7 +183,7 @@
                 <% } %>
             </tbody>
         </table>
-        <a href="booking_history.jsp" class="btn btn-warning btn-sm">See All</a>
+        <a href="${pageContext.request.contextPath}/Views/Customer/booking_history.jsp" class="btn btn-warning btn-sm">See All</a>
     </div>
 </div>
 

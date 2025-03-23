@@ -33,6 +33,13 @@ public class BookingController extends HttpServlet {
 
         User customer = (User) session.getAttribute("user");
         String action = request.getParameter("action");
+     // In BookingController's doGet method
+        if ("manage".equals(action)) {
+            List<Booking> allBookings = BookingDAO.getAllBookings();
+            request.setAttribute("bookings", allBookings);
+            request.getRequestDispatcher("/Views/Admin/manage_bookings.jsp").forward(request, response);
+            return;
+        }
 
         if ("generateInvoice".equals(action)) {
             generateInvoice(request, response);

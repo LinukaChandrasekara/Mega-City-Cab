@@ -1,5 +1,8 @@
 package com.megacitycab.models;
 
+import java.sql.Blob;
+import java.sql.Timestamp;
+
 public class User {
     private int userID;
     private String name;
@@ -9,8 +12,21 @@ public class User {
     private String password;
     private String role;
     private byte[] profilePicture;
+	private Timestamp createdAt;
 
-    public User() {}
+    public User(int userID, String name, String email, String phone, 
+            String address, String password, byte[] profilePicture,
+            String role, Timestamp createdAt) {
+     this.userID = userID;
+     this.name = name;
+     this.email = email;
+     this.phone = phone;
+     this.address = address;
+     this.password = password;
+     this.profilePicture = profilePicture;
+     this.role = role;
+     this.createdAt = createdAt;
+ }
 
     public User(int userID, String name, String email, String phone, String address, String password, String role, byte[] profilePicture) {
         this.userID = userID;

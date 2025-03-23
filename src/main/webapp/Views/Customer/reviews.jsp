@@ -59,7 +59,7 @@
     <!-- Sidebar -->
     <div class="sidebar">
         <h4>Mega City Cab</h4>
-        <a href="${pageContext.request.contextPath}/BookingController"><i class="fas fa-home"></i> Dashboard</a>
+        <a href="${pageContext.request.contextPath}/BookingController?action=dashboard"><i class="fas fa-home"></i> Dashboard</a>
         <a href="${pageContext.request.contextPath}/Views/Customer/manage_profile.jsp" class="nav-link text-white"><i class="fas fa-user"></i> Manage Profile</a>
         <a href="${pageContext.request.contextPath}/Views/Customer/book_ride.jsp" class="nav-link text-white"><i class="fas fa-taxi"></i> Book a Ride</a>
         <a href="${pageContext.request.contextPath}/Views/Customer/booking_history.jsp" class="nav-link text-white"><i class="fas fa-history"></i> Booking History</a>

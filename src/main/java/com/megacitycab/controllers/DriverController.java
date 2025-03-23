@@ -112,9 +112,9 @@ public class DriverController extends HttpServlet {
         if ("updateVehicle".equals(action)) {
             handleUpdateVehicle(request, response);
         } else if ("acceptRide".equals(action)) {
-            handleAcceptRide(request, response, null);
+            handleAcceptRide(request, response, driver);
         } else if ("updateRideStatus".equals(action)) {
-            handleUpdateRideStatus(request, response, null);
+            handleUpdateRideStatus(request, response, driver);
         } else if ("updateProfile".equals(action)) {
             handleUpdateProfile(request, response);
         }
@@ -173,15 +173,21 @@ public class DriverController extends HttpServlet {
         String licensePlate = request.getParameter("licensePlate");
         String availabilityStatus = request.getParameter("availabilityStatus");
 
-        // ✅ Check if driver already has a vehicle
         Vehicle existingVehicle = VehicleDAO.getVehicleByDriverId(driver.getUserID());
-
         boolean success;
-        if (existingVehicle != null) {
-            success = VehicleDAO.updateVehicle(driver.getUserID(), vehicleType, model, licensePlate, availabilityStatus);
-        } else {
-            success = VehicleDAO.insertVehicle(driver.getUserID(), vehicleType, model, licensePlate, availabilityStatus);
-        }
+        try {
+        	if (existingVehicle != null) {
+        		// Update existing vehicle
+        		success = VehicleDAO.updateVehicle(
+        				driver.getUserID(), vehicleType, model, licensePlate, availabilityStatus
+        		);
+        	} else {
+        		// Insert new vehicle
+        		success = VehicleDAO.insertVehicle(
+        				driver.getUserID(), vehicleType, model, licensePlate, availabilityStatus
+        		);
+        	}
+        
 
         if (success) {
             // ✅ Update session with new vehicle details
@@ -192,10 +198,19 @@ public class DriverController extends HttpServlet {
         } else {
             response.sendRedirect(request.getContextPath() + "/Views/Driver/manage_vehicle.jsp?error=Failed%20to%20update%20vehicle.");
         }
+        } catch (IllegalArgumentException e) {
+            // License plate conflict
+            response.sendRedirect(request.getContextPath() + 
+                "/Views/Driver/manage_vehicle.jsp?error=License%20Plate%20already%20in%20use!");
+        }
     }
     private void handleAcceptRide(HttpServletRequest request, HttpServletResponse response, Driver driver) throws IOException {
+        // ✅ Check if driver is valid
+        if (driver == null) {
+            response.sendRedirect("DriverController?error=Driver%20not%20logged%20in");
+            return;
+        }
         int bookingID = Integer.parseInt(request.getParameter("bookingID"));
-
         boolean success = BookingDAO.assignDriverToBooking(bookingID, driver.getUserID());
 
         if (success) {
@@ -206,7 +221,13 @@ public class DriverController extends HttpServlet {
     }
 
     private void handleUpdateRideStatus(HttpServletRequest request, HttpServletResponse response, Driver driver) throws IOException {
-        int bookingID = Integer.parseInt(request.getParameter("bookingID"));
+        
+        // ✅ Check if driver is valid
+        if (driver == null) {
+            response.sendRedirect("DriverController?error=Driver%20not%20logged%20in");
+            return;
+        }
+    	int bookingID = Integer.parseInt(request.getParameter("bookingID"));
         String newStatus = request.getParameter("status");
 
         boolean success = BookingDAO.updateBookingStatus(bookingID, newStatus);
@@ -217,48 +238,4 @@ public class DriverController extends HttpServlet {
             response.sendRedirect("DriverController?error=Failed to update ride.");
         }
     }
-
-
-    /*
-    private void handleAcceptRide(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        int bookingID = Integer.parseInt(request.getParameter("bookingID"));
-        HttpSession session = request.getSession(false);
-        User driver = (User) session.getAttribute("user");
-
-        if (driver == null || !"Driver".equalsIgnoreCase(driver.getRole())) {
-            response.sendRedirect("DriverController?error=Unauthorized access.");
-            return;
-        }
-
-        // Check if the booking exists and is available
-        Booking booking = BookingDAO.getBookingById(bookingID);
-        if (booking == null || !"Pending".equalsIgnoreCase(Booking.getStatus())) {
-            response.sendRedirect("DriverController?error=Booking%20is%20not%20available%20or%20already%20assigned.");
-            return;
-        }
-
-        // Assign the ride to the driver and update status to "Confirmed"
-        boolean success = BookingDAO.assignDriverToBooking(bookingID, driver.getUserID());
-
-        if (success) {
-            response.sendRedirect("DriverController?success=Ride%20Accepted!");
-        } else {
-            response.sendRedirect("DriverController?error=Failed%20to%20accept%20ride.");
-        }
-    }
-    
-
-
-    private void handleUpdateRideStatus(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        int bookingID = Integer.parseInt(request.getParameter("bookingID"));
-        String newStatus = request.getParameter("status");
-
-        boolean success = BookingDAO.updateBookingStatus(bookingID, newStatus);
-
-        if (success) {
-            response.sendRedirect("DriverController?success=Ride%20Updated!");
-        } else {
-            response.sendRedirect("DriverController?error=Failed%20to%20update%20ride.");
-        }
-    }*/
 }

@@ -116,4 +116,36 @@ public class UserDAO {
         }
         return false;
     }
+    public static User getUserById(int userID) {
+        String sql = "SELECT * FROM Users WHERE UserID = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
+            stmt.setInt(1, userID);
+            ResultSet rs = stmt.executeQuery();
+            
+            if (rs.next()) {
+                Blob profileBlob = rs.getBlob("ProfilePicture");
+                byte[] profileBytes = null;
+                if (profileBlob != null) {
+                    profileBytes = profileBlob.getBytes(1, (int) profileBlob.length());
+                }
+                
+                return new User(
+                    rs.getInt("UserID"),
+                    rs.getString("Name"),
+                    rs.getString("Email"),
+                    rs.getString("Phone"),
+                    rs.getString("Address"),
+                    rs.getString("Password"),
+                    profileBytes,  // Direct byte array
+                    rs.getString("Role"),
+                    rs.getTimestamp("CreatedAt")
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

@@ -51,4 +51,21 @@ public class AdminDAO {
         }
         return 0;
     }
+    public static double getTotalCompletedRevenue() {
+        double totalRevenue = 0.0;
+        String sql = "SELECT COALESCE(SUM(TotalAmount), 0) AS total_revenue " +
+                     "FROM Bookings WHERE BookingStatus = 'Completed'";
+        
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+            
+            if (rs.next()) {
+                totalRevenue = rs.getDouble("total_revenue");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return totalRevenue;
+    }
 }

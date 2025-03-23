@@ -149,7 +149,7 @@
         <div class="login-form-section">
             
             <!-- Logo (Optional) -->
-            <img src="<%= request.getContextPath() %>/images/logo.png" alt="Mega City Cab Logo" class="logo-img">
+            <img src="../Logo.png" class="logo-img">
             
             <!-- Retro Heading -->
             <h1 class="retro-heading text-center">MEGA CITY CAB</h1>

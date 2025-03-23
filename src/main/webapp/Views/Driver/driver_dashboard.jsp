@@ -153,7 +153,7 @@ body {
                     (<%= request.getAttribute("vehicleModel") != null ? request.getAttribute("vehicleModel") : "N/A" %>) | 
                     Plate: <%= request.getAttribute("licensePlate") != null ? request.getAttribute("licensePlate") : "N/A" %>
                 </p>
-                <a href="manage_profile.jsp" class="btn btn-warning btn-sm">Edit Profile</a>
+                <a href="${pageContext.request.contextPath}/Views/Driver/manage_profile.jsp" class="btn btn-warning btn-sm">Edit Profile</a>
             </div>
         </div>
     </div>

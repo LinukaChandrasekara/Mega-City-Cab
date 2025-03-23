@@ -20,7 +20,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 
     <style>
-        /* Sidebar Styling */
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Arial', sans-serif;
+        }
         .sidebar {
             width: 260px;
             height: 100vh;
@@ -47,67 +50,60 @@
             background-color: #343a40;
             padding-left: 18px;
         }
-
-        /* Main Content Offset for Sidebar */
         .main-content {
-            margin-left: 280px; /* match sidebar width + some gap */
+            margin-left: 260px;
             padding: 20px;
         }
-
-        /* General Styles */
-        body {
-            background-color: #f8f9fa;
-            font-family: 'Poppins', sans-serif;
-        }
-        .container {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-            max-width: 600px;
-        }
-
-        /* Heading */
-        .heading-container {
-            background: #ffc107;
+        .dashboard-header {
+            background-color: #FFC107;
             padding: 15px;
             border-radius: 8px;
             text-align: center;
             color: #212529;
             font-weight: bold;
+            font-size: 22px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
         }
-
-        /* Profile Image */
         .profile-img {
-            width: 120px;
-            height: 120px;
+            width: 130px;
+            height: 130px;
             object-fit: cover;
             border-radius: 50%;
-            border: 4px solid #ffc107;
+            border: 3px solid #FFC107;
             margin-top: 10px;
         }
-
-        /* Buttons */
-        .btn-primary {
-            background-color: #007BFF;
+        .card-custom {
+            border-radius: 10px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             border: none;
-            transition: 0.3s ease-in-out;
+            padding: 30px;
+            max-width: 600px;
+            margin: 0 auto;
         }
-        .btn-primary:hover {
-            background-color: #0056b3;
-            transform: scale(1.05);
-        }
-
-        /* Alerts */
-        .alert {
-            border-radius: 5px;
-        }
-
-        /* Form Fields */
         .form-control {
             border-radius: 5px;
             box-shadow: none;
+            border: 1px solid #ced4da;
+        }
+        .form-control:focus {
+            border-color: #FFC107;
+            box-shadow: 0 0 0 0.2rem rgba(255, 193, 7, 0.25);
+        }
+        .btn-warning {
+            background-color: #FFC107;
+            border: none;
+            color: #212529;
+            transition: 0.3s;
+        }
+        .btn-warning:hover {
+            background-color: #e0a800;
+            transform: translateY(-1px);
+        }
+        .alert {
+            border-radius: 8px;
+            margin-bottom: 20px;
         }
     </style>
 </head>
@@ -116,7 +112,7 @@
 <!-- Sidebar Navigation -->
 <div class="sidebar">
     <h4>Mega City Cab</h4>
-    <a href="${pageContext.request.contextPath}/BookingController"><i class="fas fa-home"></i> Dashboard</a>
+    <a href="${pageContext.request.contextPath}/BookingController?action=dashboard"><i class="fas fa-home"></i> Dashboard</a>
     <a href="${pageContext.request.contextPath}/Views/Customer/manage_profile.jsp" class="nav-link text-white">
         <i class="fas fa-user"></i> Manage Profile
     </a>
@@ -126,7 +122,7 @@
     <a href="${pageContext.request.contextPath}/Views/Customer/booking_history.jsp" class="nav-link text-white">
         <i class="fas fa-history"></i> Booking History
     </a>
-    <a href="${pageContext.request.contextPath}/Views/Customer/reviews.jsp" class="nav-link text-white">
+    <a href="${pageContext.request.contextPath}/Views/Customer/customer_reviews.jsp" class="nav-link text-white">
         <i class="fas fa-star"></i> Reviews
     </a>
     <a href="${pageContext.request.contextPath}/Views/login.jsp?" class="nav-link text-danger">

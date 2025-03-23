@@ -50,8 +50,10 @@ public class BookingDAO {
 	            bookings.add(booking);
 	        }
 
-	    } catch (SQLException e) {
+	    }// In BookingDAO.getAllBookings()
+	    catch (SQLException e) {
 	        e.printStackTrace();
+	        System.err.println("SQL Error in getAllBookings: " + e.getMessage());
 	    }
 
 	    return bookings;
@@ -366,7 +368,45 @@ return false;
         }
         return liveRides;
     }
+    public static List<Booking> getCompletedBookingsByCustomer(int customerId) {
+        List<Booking> bookings = new ArrayList<>();
+        String sql = "SELECT b.BookingID, b.CustomerID, b.DriverID, b.PickupLat, b.PickupLng, " +
+                     "b.DropoffLat, b.DropoffLng, b.VehicleType, b.BookingDate, " +
+                     "u.Name AS DriverName " +
+                     "FROM Bookings b " +
+                     "LEFT JOIN Users u ON b.DriverID = u.UserID " +
+                     "WHERE b.CustomerID = ? AND b.BookingStatus = 'Completed'";
 
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
+            stmt.setInt(1, customerId);
+            ResultSet rs = stmt.executeQuery();
 
-
+            while (rs.next()) {
+                Booking booking = new Booking(
+                    rs.getInt("BookingID"),
+                    rs.getInt("CustomerID"),
+                    rs.getInt("DriverID"),
+                    rs.getDouble("PickupLat"),
+                    rs.getDouble("PickupLng"),
+                    rs.getDouble("DropoffLat"),
+                    rs.getDouble("DropoffLng"),
+                    0.0, // Distance not needed
+                    0,   // EstimatedTime not needed
+                    rs.getString("VehicleType"),
+                    0.0, // Fare not needed
+                    0.0, // Discount not needed
+                    0.0, // TotalAmount not needed
+                    "Completed",
+                    rs.getTimestamp("BookingDate")
+                );
+                booking.setDriverName(rs.getString("DriverName"));
+                bookings.add(booking);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return bookings;
+    }
 }

@@ -125,7 +125,7 @@
     <!-- Sidebar -->
     <div class="sidebar">
         <h4>Mega City Cab</h4>
-        <a href="${pageContext.request.contextPath}/BookingController"><i class="fas fa-home"></i> Dashboard</a>
+        <a href="${pageContext.request.contextPath}/BookingController?action=dashboard""><i class="fas fa-home"></i> Dashboard</a>
         <a href="${pageContext.request.contextPath}/Views/Customer/manage_profile.jsp" class="nav-link text-white">
             <i class="fas fa-user"></i> Manage Profile
         </a>
@@ -135,7 +135,7 @@
         <a href="${pageContext.request.contextPath}/Views/Customer/booking_history.jsp" class="nav-link text-white">
             <i class="fas fa-history"></i> Booking History
         </a>
-        <a href="${pageContext.request.contextPath}/Views/Customer/reviews.jsp" class="nav-link text-white">
+        <a href="${pageContext.request.contextPath}/Views/Customer/customer_reviews.jsp" class="nav-link text-white">
             <i class="fas fa-star"></i> Reviews
         </a>
         <a href="${pageContext.request.contextPath}/Views/login.jsp" class="nav-link text-danger">

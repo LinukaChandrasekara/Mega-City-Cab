@@ -1,5 +1,5 @@
-<%@ page import="java.util.List, com.megacitycab.models.Booking, com.megacitycab.dao.BookingDAO" %>
-<%@ page import="com.megacitycab.models.User" %>
+<%@ page import="java.util.List, com.megacitycab.models.Booking, com.megacitycab.dao.*" %>
+<%@ page import="com.megacitycab.models.User, com.megacitycab.models.Review" %> <!-- Added Review import -->
 
 <%
     User loggedUser = (User) session.getAttribute("user");
@@ -100,7 +100,7 @@
     <!-- Sidebar -->
     <div class="sidebar">
         <h4>Mega City Cab</h4>
-        <a href="${pageContext.request.contextPath}/BookingController"><i class="fas fa-home"></i> Dashboard</a>
+        <a href="${pageContext.request.contextPath}/BookingController?action=dashboard"><i class="fas fa-home"></i> Dashboard</a>
         <a href="${pageContext.request.contextPath}/Views/Customer/manage_profile.jsp" class="nav-link text-white">
             <i class="fas fa-user"></i> Manage Profile
         </a>
@@ -110,7 +110,7 @@
         <a href="${pageContext.request.contextPath}/Views/Customer/booking_history.jsp" class="nav-link text-white">
             <i class="fas fa-history"></i> Booking History
         </a>
-        <a href="${pageContext.request.contextPath}/Views/Customer/reviews.jsp" class="nav-link text-white">
+        <a href="${pageContext.request.contextPath}/Views/Customer/customer_reviews.jsp" class="nav-link text-white">
             <i class="fas fa-star"></i> Reviews
         </a>
         <a href="${pageContext.request.contextPath}/Views/login.jsp" class="nav-link text-danger">
@@ -128,41 +128,54 @@
 
             <!-- Booking History Table -->
             <table class="table table-striped table-custom">
-                <thead>
-                    <tr>
-                        <th>Booking ID</th>
-                        <th>Pickup</th>
-                        <th>Dropoff</th>
-                        <th>Vehicle</th>
-                        <th>Fare</th>
-                        <th>Status</th>
-                        <th>Invoice</th>
-                    </tr>
-                </thead>
+				<thead>
+				    <tr>
+				        <th>Booking ID</th>
+				        <th>Pickup</th>
+				        <th>Dropoff</th>
+				        <th>Vehicle</th>
+				        <th>Fare</th>
+				        <th>Status</th>
+				        <th>Invoice</th>
+				        <th>Review</th>
+				    </tr>
+				</thead>
                 <tbody>
-                    <%
-                        List<Booking> bookings = BookingDAO.getBookingsByCustomer(loggedUser.getUserID());
-                        for (Booking booking : bookings) {
-                    %>
-                    <tr>
-                        <td><%= booking.getBookingID() %></td>
-                        <td><%= booking.getPickupLat() %>, <%= booking.getPickupLng() %></td>
-                        <td><%= booking.getDropoffLat() %>, <%= booking.getDropoffLng() %></td>
-                        <td><%= booking.getVehicleType() %></td>
-                        <td>$<%= booking.getTotalAmount() %></td>
-                        <td><%= booking.getStatus() %></td>
-                        <td>
-                            <% if ("Completed".equals(booking.getStatus())) { %>
-                                <a href="<%= request.getContextPath() %>/BookingController?action=generateInvoice&bookingID=<%= booking.getBookingID() %>" 
-                                   class="btn btn-primary btn-sm">
-                                    <i class="fas fa-download"></i> Download Invoice
-                                </a>
-                            <% } else { %>
-                                <span class="text-muted">Not Available</span>
-                            <% } %>
-                        </td>
-                    </tr>
-                    <% } %>
+						<%
+						    for (Booking booking : bookingHistory) { // Changed "bookings" to "bookingHistory"
+						        Review existingReview = ReviewDAO.getReviewByBookingId(booking.getBookingID());
+						%>
+						<tr>
+						    <td><%= booking.getBookingID() %></td>
+						    <td><%= booking.getPickupLat() %>, <%= booking.getPickupLng() %></td>
+						    <td><%= booking.getDropoffLat() %>, <%= booking.getDropoffLng() %></td>
+						    <td><%= booking.getVehicleType() %></td>
+						    <td>$<%= booking.getTotalAmount() %></td>
+						    <td><%= booking.getStatus() %></td>
+						    <td>
+						        <% if ("Completed".equals(booking.getStatus())) { %>
+						            <a href="${pageContext.request.contextPath}/BookingController?action=generateInvoice&bookingID=<%= booking.getBookingID() %>" 
+						               class="btn btn-primary btn-sm">
+						                <i class="fas fa-download"></i> Invoice
+						            </a>
+						        <% } else { %>
+						            <span class="text-muted">N/A</span>
+						        <% } %>
+						    </td>
+								<td>
+								    <% if ("Completed".equals(booking.getStatus())) { 
+								        if (existingReview == null) { %>
+								            <a href="${pageContext.request.contextPath}/ReviewController?action=add&bookingID=<%= booking.getBookingID() %>" 
+								                class="btn btn-success btn-sm">
+								                <i class="fas fa-star"></i> Review
+								            </a>
+								    <% } else { %>
+								        <span class="text-success">Reviewed</span>
+								    <% } %>
+								<% } %>
+								</td>
+						</tr>
+						<% } %>
                 </tbody>
             </table>
         </div>

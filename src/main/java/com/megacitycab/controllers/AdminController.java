@@ -29,7 +29,7 @@ public class AdminController extends HttpServlet {
         int totalBookings = AdminDAO.getTotalBookings();
         int totalCustomers = AdminDAO.getTotalCustomers();
         int totalDrivers = AdminDAO.getTotalDrivers();
-        double totalRevenue = AdminDAO.getTotalRevenue();
+        double totalRevenue = AdminDAO.getTotalCompletedRevenue();
         // ✅ Fetch live ride status (Pending, Confirmed, Ongoing)
         List<Map<String, String>> liveRides = BookingDAO.getLiveRides();
         request.setAttribute("liveRides", liveRides);

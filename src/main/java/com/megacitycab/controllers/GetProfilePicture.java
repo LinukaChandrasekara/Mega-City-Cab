@@ -1,5 +1,6 @@
 package com.megacitycab.controllers;
 
+import com.itextpdf.text.pdf.codec.Base64.InputStream;
 import com.megacitycab.utils.DBConnection;
 
 import jakarta.servlet.ServletException;
@@ -42,9 +43,21 @@ public class GetProfilePicture extends HttpServlet {
                     OutputStream out = response.getOutputStream();
                     rs.getBinaryStream("ProfilePicture").transferTo(out);
                     out.close();
-                } else {
-                    // ✅ If no image, return default profile picture
-                    response.sendRedirect(request.getContextPath() + "/Images/default_driver.png");
+                }else {
+                    // Serve default image from server resources
+                    InputStream is = (InputStream) getServletContext().getResourceAsStream("/images/default_driver.png");
+                    if (is != null) {
+                        response.setContentType("image/png");
+                        OutputStream out = response.getOutputStream();
+                        byte[] buffer = new byte[4096];
+                        int bytesRead;
+                        while ((bytesRead = is.read(buffer)) != -1) {
+                            out.write(buffer, 0, bytesRead);
+                        }
+                        is.close();
+                    } else {
+                        response.sendError(HttpServletResponse.SC_NOT_FOUND);
+                    }
                 }
             }
         } catch (NumberFormatException e) {
